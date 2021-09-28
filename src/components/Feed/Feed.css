@@ -1,0 +1,17 @@
+.contentWrap{
+    max-width: 800px;
+}
+.ant-avatar{
+    display: grid;
+    place-items: center;
+    
+}
+.ant-avatar img{
+    object-fit: contain;
+  height: 100%;
+  width: 100%;
+}
+.ant-comment-actions{
+    display: flex;
+    justify-content: space-between;
+}

@@ -1,0 +1,24 @@
+
+.ant-checkbox-group {
+    box-sizing: border-box;
+    margin: 20px;
+    padding: 0;
+    color: rgba(0, 0, 0, 0.85);
+    font-size: 14px;
+    font-variant: tabular-nums;
+    line-height: 1.5715;
+    list-style: none;
+    font-feature-settings: 'tnum', "tnum";
+    display: flex;
+    flex-direction: column;
+}
+.ant-checkbox-group-item{
+    padding-bottom: 15px;;
+}
+.ant-checkbox-checked .ant-checkbox-inner {
+    background-color: black;
+    border-color: black;
+  }
+  .ant-checkbox-input:hover{
+    border-color: black;
+  }

@@ -1,0 +1,24 @@
+.FeedContainer{
+    display: grid;
+    height: 100%;
+    grid-template-columns: 0.5fr 2fr 0.5fr;
+    grid-template-areas:". FeedContent ." ;
+}
+#FeedContent{
+    grid-area: FeedContent;
+   
+}
+
+.FeedDetailBtn{
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+        border-radius: 6px;
+        background-color: white;
+        color: gray;
+        border-color:rgb(248, 242, 242);
+   
+}
+.FeedDetailBtn:hover{
+    background-color: black;
+    color: white;
+    border-color: white;
+}

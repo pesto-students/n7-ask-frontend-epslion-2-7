@@ -1,0 +1,32 @@
+.userIcon{
+    float: right;
+}
+.ant-menu-submenu-title{
+    display: none;
+
+}
+.menuDrawer{
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    justify-content: center;
+}
+.logo{
+    margin-top: 5px;
+}
+
+.searchBarField{
+    background: #F2F4F8;
+    border-radius: 12px;
+    margin-top: 8px;
+    width: 200px;
+
+}
+.searchBarField:hover{
+    border-color: black;
+}
+.searchBarField .ant-input{
+    background-color: #F2F4F8;
+}
+
+
