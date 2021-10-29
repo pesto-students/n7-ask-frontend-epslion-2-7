@@ -10,18 +10,23 @@ import UserProfile from "./components/UserProfile/UserProfile";
 import { userContext } from "./components/userContext/userContext";
 import AppHeader from "./components/Common/AppHeader/AppHeader";
 import ResetPassword from "./components/Login/ResetPassword";
+import FeedDetail from "./components/Common/FeedDetail/FeedDetail";
+import Feed from "./components/Feed/Feed";
 
 
 const App = () => {
-  const [whatToShow, setWhatToShow] = useState("feed");
+  const [whatToShow, setWhatToShow] = useState("");
   const [showDetailFeed, setShowDetailFeed] = useState(false);
   const [user, setUser] = useState(null);
   const [sort, toSort]= useState(false);
   const[showInterestPage, setShowInterestPage]= useState(false);
+  const [selectedInterests, setSelectedInterests] = useState([]);
+
+  const[searchQuery, setSearchQuery]= useState("");
   return (
     <>
     
-      <userContext.Provider value={{user,setUser, toSort, sort} }>
+      <userContext.Provider value={{user,setUser, toSort, sort, searchQuery, setSearchQuery, selectedInterests,setSelectedInterests} }>
       
         <BrowserRouter>
        
@@ -43,10 +48,17 @@ const App = () => {
              
               
             </Route>
+            <Route path="/question/:id" >
+            <AppHeader   setWhatToShow={setWhatToShow} setShowDetailFeed={setShowDetailFeed}/>
+              <FeedDetail/>
+            </Route>
+
+           
             <Route path="/userProfile">
             <AppHeader   setWhatToShow={setWhatToShow} setShowDetailFeed={setShowDetailFeed}/>
               {/* //Check if the user is logged In  */}
-              {user!=null ? <UserProfile user={user}/> : <Redirect to='/login'/> }
+              {user!=null ? <UserProfile user={user}/> : <Redirect to='/login'/>}
+            {/* <UserProfile user={user} /> */}
               
             </Route>
           </Switch>

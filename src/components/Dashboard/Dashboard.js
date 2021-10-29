@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./Dashboard.css";
-import { Layout, Divider } from "antd";
+import { Layout, Divider,Affix } from "antd";
 import { Route, Switch } from "react-router-dom";
 
 import AppHeader from "../Common/AppHeader/AppHeader";
@@ -28,14 +28,17 @@ function Dashboard({
   };
   return (
     <userContext.Consumer>
-      {({ toSort }) => (
+      {({ toSort,setSelectedInterests, selectedInterests }) => (
         <>
           <AppHeader
             setWhatToShow={setWhatToShow}
             setShowDetailFeed={setShowDetailFeed}
           />
           {!showDetailFeed && (
+            
             <Layout>
+              <Affix   offsetTop={70.5}>
+              
               <Sider
                 className="sider"
                 breakpoint="lg"
@@ -47,13 +50,18 @@ function Dashboard({
                   console.log(collapsed, type);
                 }}
               >
-                <AppSider setWhatToShow={setWhatToShow} toSort={toSort}/>
+                
+                <AppSider whatToShow={whatToShow} setWhatToShow={setWhatToShow} toSort={toSort} setSelectedInterests={setSelectedInterests} selectedInterests={selectedInterests}/>
               </Sider>
+              </Affix>
 
-              <Content>
-                <AppContent whatToShow={whatToShow} onFeedClick={onFeedClick} />
+              <Content className="mainContentShow" >
+                <br/>
+                <br/>
+                <AppContent id="mainAskContent" whatToShow={whatToShow} onFeedClick={onFeedClick} />
               </Content>
             </Layout>
+            
           )}
           {/* SHow Feed Details */}
           {showDetailFeed && (

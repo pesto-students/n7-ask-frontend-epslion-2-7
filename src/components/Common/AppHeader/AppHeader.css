@@ -8,25 +8,43 @@
 .menuDrawer{
     display: flex;
     flex-direction: column;
-    text-align: center;
-    justify-content: center;
+   
 }
-.logo{
-    margin-top: 5px;
-}
+
 
 .searchBarField{
     background: #F2F4F8;
     border-radius: 12px;
-    margin-top: 8px;
-    width: 200px;
+  
+    flex-shrink: 1;
+    max-width: 500px;
+    
+   
 
 }
 .searchBarField:hover{
+    box-shadow: 0 0 5px #747373;
     border-color: black;
+}
+.searchBarField:focus{
+    border: hidden;
+    box-shadow: 0 0 5px #747373;
+}
+::selection {
+    color: rgb(255, 255, 255);
+    background: #747373;
 }
 .searchBarField .ant-input{
     background-color: #F2F4F8;
 }
-
+.menuBar{
+    z-index: 12;
+    background-color: white;
+    
+}
+.testingAffix{
+    
+    box-shadow: 0 0 30px #000000;
+    border-bottom: solid 1px #e8e8e8;
+}
 

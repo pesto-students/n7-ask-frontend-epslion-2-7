@@ -1,24 +1,42 @@
-import React from 'react';
-import {Link} from 'react-router-dom'
-import './RightMenu.css'
-import { Menu, Grid, Button } from 'antd';
+import React from "react";
+import { Link } from "react-router-dom";
+import "./RightMenu.css";
+import { Menu, Grid, Button } from "antd";
 const SubMenu = Menu.SubMenu;
 const MenuItemGroup = Menu.ItemGroup;
 
 const { useBreakpoint } = Grid;
 
-const RightMenu = () => {
+const RightMenu = ({ user, logOut, setUser }) => {
   const { md } = useBreakpoint();
-  return (
+
+  const UserNotLoggedIn = (
     <Menu mode={md ? "horizontal" : "inline"}>
+    
+        <Button shape="round" className="rightMenuBtn">
+          <Link to="/login">Log In</Link>
+        </Button>
+
+        <br/>
+      
+        <Button shape="round" className="rightMenuBtn">
+          <Link to="/signup">Sign up</Link>
+        </Button>
+      
+    </Menu>
+  );
+
+  const UserLoggedIn = (
+    <Menu >
       <Menu.Item key="mail">
-       <Button shape="round" className="rightMenuBtn"><Link to="/login">Log In</Link></Button>
+        <Link to="/userProfile">My Profile</Link>
       </Menu.Item>
       <Menu.Item key="app">
-      <Button shape="round" className="rightMenuBtn"><Link to="/signup">Sign up</Link></Button>
+        <Button className="rightMenuBtn" onClick={() => logOut(setUser)}>LogOut</Button>
       </Menu.Item>
     </Menu>
   );
-}
+  return <>{user ? UserLoggedIn : UserNotLoggedIn}</>;
+};
 
 export default RightMenu;

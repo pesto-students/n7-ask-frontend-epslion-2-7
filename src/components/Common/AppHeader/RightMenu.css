@@ -3,6 +3,8 @@
     border-radius: 6px;
     background-color: black;
     color: white;
+    margin-top: 6px;
+    margin-right:4px;
 }
 .rightMenuBtn:hover{
     background-color: white;

@@ -62,14 +62,14 @@ function ResetPassword() {
       Regex.Password.test(Password.title) &&
       (Password.title == retypePassword.title)
     ) {
-        history.push('/login');
+       // history.push('/login');
       //send the post request with the email and password and get a response
       const response = await axios.post(
         `https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/resetpassword`,
         {
           email: Email.title,
-          password: Password.title,
-          password1: retypePassword.title,
+          password1: Password.title,
+          password2: retypePassword.title,
         }
       );
       console.log(response);

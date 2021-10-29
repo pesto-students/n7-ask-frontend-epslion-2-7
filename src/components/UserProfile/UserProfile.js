@@ -2,18 +2,65 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./UserProfile.css";
 
-import { Avatar, Divider, Button, List, Typography } from "antd";
-import { UserOutlined } from "@ant-design/icons";
+import { Avatar, Divider, Button, List, Typography, Upload } from "antd";
+import { UserOutlined, EditOutlined } from "@ant-design/icons";
+
+
+function getBase64(img, callback) {
+  const reader = new FileReader();
+  reader.addEventListener('load', () => callback(reader.result));
+  reader.readAsDataURL(img);
+}
+
+function beforeUpload(file) {
+  const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+  if (!isJpgOrPng) {
+    //message.error('You can only upload JPG/PNG file!');
+  }
+  const isLt2M = file.size / 1024 / 1024 < 2;
+  if (!isLt2M) {
+    //message.error('Image must smaller than 2MB!');
+  }
+  return isJpgOrPng && isLt2M;
+}
+
+
+
+
 
 function UserProfile({ user }) {
   const [userData, setUserData] = useState([]);
   const [posts, updatePost] = useState([]);
+  const [type, setType]= useState("question");
+
+  const [questions, setQuestions]= useState([])
+  const [answers, setAnswers]= useState([])
+  const [comments, setComments]= useState([])
 
   useEffect(async () => {
-    const response = await axios.get("http://localhost:3000/userData", {});
+    const questions = await axios.get("https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/userQuestions", {
+      headers: { Authorization: `${user.token}` },
+    });
+    if(questions.data.success){
+      setQuestions(questions.data.data);
+    }
 
-    setUserData(response.data);
-    console.log(userData);
+    const answers = await axios.get("https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/userAnswers", {
+      headers: { Authorization: `${user.token}` },
+    });
+    if(answers.data.success){
+      setAnswers(answers.data.data)
+    }
+
+    const comments = await axios.get("https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/userComments", {
+      headers: { Authorization: `${user.token}` },
+    });
+    if(comments.data.data){
+      setComments(comments.data.data)
+    }
+
+    
+    
 
     console.log("mounted");
 
@@ -22,29 +69,54 @@ function UserProfile({ user }) {
 
   const onButtonClick = (type) => {
     if (type === "questions") {
-      updatePost(userData.questions);
+      setType("question")
+      updatePost(questions);
     } else if (type === "answers") {
-      updatePost(userData.answers);
+      setType("answers")
+     updatePost(answers);
     } else {
-      updatePost(userData.comments);
+      setType("comments")
+      updatePost(comments);
     }
   };
 
+
+  const  handleChange = info => {
+    if (info.file.status === 'uploading') {
+     // this.setState({ loading: true });
+      return;
+    }
+    if (info.file.status === 'done') {
+      // Get this url from response in real world.
+     // getBase64(info.file.originFileObj, imageUrl =>
+      
+        //setUserData({...userData, profilePic:imageUrl})
+     // );
+    }
+  };
+ 
+  
   return (
     <div className="container">
-      
+      <br/>
+      <br/>
       <div id="UserPersonalInfo">
         <Divider />
-        <h1>{userData.name}</h1>
+        <h1>{user.name}</h1>
+        <div className="editIcon">
         <Avatar
-          src={user}
+          src={userData.profilePic}
           size={{ xs: 100, sm: 150, md: 150, lg: 150, xl: 150, xxl: 150 }}
           icon={<UserOutlined />}
         />
+        <Upload onChange={handleChange} showUploadList={false} ><EditOutlined style={{float:"right"}}/></Upload>
+        
+       </div>
       </div>
 
       <div id="summary">
         <Button
+        block
           className="userProfileButtons"
           onClick={() => onButtonClick("questions")}
          
@@ -56,6 +128,7 @@ function UserProfile({ user }) {
 
       <div id="questions">
         <Button
+        block
           className="userProfileButtons"
           onClick={() => onButtonClick("questions")}
          
@@ -67,6 +140,7 @@ function UserProfile({ user }) {
 
       <div id="answers">
         <Button
+        block
           className="userProfileButtons"
           onClick={() => onButtonClick("answers")}
          
@@ -77,6 +151,7 @@ function UserProfile({ user }) {
 
       <div id="comments">
         <Button
+        block
           className="userProfileButtons"
           onClick={() => onButtonClick("comments")}
           
@@ -87,6 +162,7 @@ function UserProfile({ user }) {
 
       <div id="reputation">
         <Button
+        block
           className="userProfileButtons"
           onClick={() => onButtonClick("questions")}
          
@@ -103,7 +179,7 @@ function UserProfile({ user }) {
           footer={<div>Footer</div>}
           bordered
           dataSource={posts}
-          renderItem={(item) => <List.Item>{item}</List.Item>}
+          renderItem={(item) => <List.Item>{item[`${type}`]}</List.Item>}
         />
       </div>
     </div>

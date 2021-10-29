@@ -4,15 +4,21 @@ body {
   font-family: 'Roboto Slab', sans-serif;
 }
 .menuBar {
+  display: flex;
+  align-items: center;
+
+  height:70px;
   padding: 0 20px;
   border-bottom: solid 1px #e8e8e8;
-  overflow: auto;
-  box-shadow: 0 0 30px #f3f1f1;
+  /*overflow: auto;*/
+  box-shadow: 0 0 30px #b6b0b0;
 }
 
 .logo {
-  width: 150px;
+  margin-right: 100px;
   float: left;
+  margin-top:10px;
+  
 }
 
 .logo a {
@@ -24,7 +30,10 @@ body {
 
 .menuCon {
   width: calc(100% - 150px);
-  float: left;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  
 }
 
 .menuCon .ant-menu-item {
@@ -57,7 +66,7 @@ body {
   float: right;
   height: 32px;
   padding: 6px;
-  margin-top: 8px;
+  margin-left:10px;
   display: none;
   background: none;
 }
@@ -168,14 +177,15 @@ body {
   width: 36px;
   height: 42px;
   color: lightgray;
-  font-size: 18px;
+  /*font-size: 18px;
   line-height: 42px;
-  text-align: center;
+  text-align: center;*/
   background: white;
   border-radius: 0 2px 2px 0;
   cursor: pointer;
   border-width: medium;
   border-color: lightgray;
+ 
   
 }
 .ant-layout-sider-zero-width-trigger:hover, .ant-layout-sider-zero-width-trigger:focus{
@@ -202,14 +212,42 @@ body {
 
 
 .ant-layout.ant-layout-has-sider > .ant-layout, .ant-layout.ant-layout-has-sider > .ant-layout-content {
-  display: grid;
+  /* display: grid; */
   width: 0;
   grid-template-columns: auto;
   padding-left: 100px;
 }
 
 
+
+.ant-menu-inline, .ant-menu-vertical, .ant-menu-vertical-left {
+  /* border-right: 1px solid #f0f0f0; */
+  border-right:none
+}
+.ant-layout-sider-children {
+  border-right: 1px solid #f0f0f0;
+}
+
+html {
+  --antd-wave-shadow-color: lightgray;
+  --scroll-bar: 0;
+}
+
+.ant-layout-sider {
+  position: relative;
+  min-width: 0;
+  background:white;
+  transition: all 0.2s;
+}
+
 @media (max-width: 767px) {
+  .QuestionInterestDomain{
+    width:60% !important
+  }
+
+  .menuCon {
+    width: 100%;
+  }
   .barsMenu {
     display: inline-block;
   }
@@ -218,7 +256,9 @@ body {
   .rightMenu {
     display: none;
   }
-
+  .logo{
+    margin-right: 20px;
+  }
   .logo a {
     margin-left: -20px;
   }
@@ -236,11 +276,21 @@ body {
     
   }
   .askQuestion{
-    width: 400px;
+    /* width: 400px; */
     padding-left: 40px;
   }
+  .ant-comment-actions{
+    width: 0px;
+  }
+  .rightMenuBtn{
+    margin-left: 22px;
+  }
 }
-
+.ant-input-affix-wrapper:not(.ant-input-affix-wrapper-disabled):hover {
+  border-color: #8d8b8b;
+  border-right-width: 1px !important;
+  z-index: 1;
+}
 
 
 

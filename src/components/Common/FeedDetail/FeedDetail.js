@@ -1,5 +1,7 @@
 import React, { createElement, useEffect, useState } from "react";
+import { useHistory, useParams } from "react-router";
 import "./FeedDetail.css";
+import axios from "axios";
 import { Comment, Tooltip, Avatar, Form, Input, Button, Divider } from "antd";
 import moment from "moment";
 import {
@@ -15,14 +17,15 @@ const { TextArea } = Input;
 const Editor = ({ onChange, onAnswerSubmit, submitting, value }) => (
   <>
     <Form.Item>
-      <TextArea rows={4}  value={value} />
+      <TextArea rows={4} value={value} />
     </Form.Item>
     <Form.Item>
       <Button
+        size="large"
+        className="answerBtn"
         htmlType="submit"
         loading={submitting}
-        onClick={()=>onAnswerSubmit(value)}
-        type="primary"
+        onClick={() => onAnswerSubmit(value)}
       >
         Answer
       </Button>
@@ -31,25 +34,53 @@ const Editor = ({ onChange, onAnswerSubmit, submitting, value }) => (
 );
 
 function FeedDetail({ setShowDetailFeed, feedContent, user }) {
-  useEffect(async () => {
-    console.log("mounted");
+  let { id } = useParams();
+  const [ questionDetails, setQuestionDetails ] = useState([{}]);
+  const [answers, setAnswers]= useState([{}]);
+  const [comments, setComments]= useState([{}]);
 
-    return () => setShowDetailFeed(false), console.log("unmounting...");
-  }, []);
+  useEffect( () => {
+   
+   async function fetchData(){
+    const questionReq = await axios.get(
+      `https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/question/${id}`
+    );
+    if (questionReq && questionReq.data.success) {
+      console.log(questionReq.data.data)
+      setQuestionDetails(questionReq.data.data);
+    }
+    const answerReq = await axios.get(
+      `https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/answers/${id}`
+    );
+    if(answerReq.data.success){
+      setAnswers(answerReq.data.data)
 
+    }
+    // const commentsReq = await axios.get(
+    //   `https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/comments/${id}`
+    // );
+    // if(commentsReq.data.success){
+    //   setComments(commentsReq.data.data)
 
+    // }
 
+   }
+   fetchData();
+    
 
-  const onActionClicked= (type, feed)=>{
+    
 
-  }
+    
+  },[id]);
+  
 
-  const onAnswerSubmit =( value) =>{
+  
+
+  const onActionClicked = (type, feed) => {};
+
+  const onAnswerSubmit = (value) => {
     //user to submit their answer.
-  }
-
-
-
+  };
 
   /*const onActionClicked = async (type, feed) => {
     if (user != null) {
@@ -95,99 +126,88 @@ function FeedDetail({ setShowDetailFeed, feedContent, user }) {
     }
   };*/
 
-
-
-
-
-
   const actionForFeedContent = (feed) => {
-   return [
-     
-
+    return [
       <Tooltip key="comment-basic-like" title="Like">
         <span
-          onClick={() => onActionClicked("like", feed)}
+          // onClick={() => onActionClicked("like")}
           style={{ fontSize: "16px" }}
         >
           {createElement(feed.liked ? HeartFilled : HeartOutlined)}
-          <span className="comment-action" style={{ fontSize: "12px" }}>
-            {feed.likes}
-          </span>
+          <span className="comment-action iconPositon">{feed.likes}</span>
         </span>
       </Tooltip>,
 
       <Tooltip key="comment-basic-like" title="Comment">
         <span onClick={onActionClicked} style={{ fontSize: "16px" }}>
           <CommentOutlined style={{ fontSize: "16px" }} />
-          <span className="comment-action" style={{ fontSize: "12px" }}>
-            {feed.comments}
-          </span>
+          <span className="comment-action iconPositon">{feed.comments}</span>
         </span>
       </Tooltip>,
 
       <Tooltip key="comment-basic-like" title="View Count">
         <span onClick={onActionClicked} style={{ fontSize: "16px" }}>
           <EyeOutlined style={{ fontSize: "16px" }} />
-          <span className="comment-action" style={{ fontSize: "12px" }}>
-            {feed.viewCount}
-          </span>
+          <span className="comment-action iconPositon">{feed.views}</span>
         </span>
       </Tooltip>,
 
       <ShareAltOutlined style={{ fontSize: "16px" }} />,
     ];
-
-   
-   
   };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  const actions = (feed) => {
+  const actions = () => {
     return [
-      <Button className="FeedDetailBtn">{feed.answers} Answers</Button>,
-      <Button className="FeedDetailBtn">{feed.comments} Comments</Button>,
+      <Button
+      role="tab"
+        className="FeedDetailBtn"
+        
+      >
+        {questionDetails[0].answers} Answers
+      </Button>,
+      <Button
+      role="tab"
+        className="FeedDetailBtn"
+        // nClick={() => onActionClicked("comments")}
+      >
+        {questionDetails[0].comments} Comments
+      </Button>,
 
       <Tooltip key="comment-basic-like" title="Like">
-        <HeartOutlined style={{ fontSize: "16px" }} />
-      </Tooltip>,
-
-      <Tooltip key="comment-basic-like" title="View Count">
-        <span onClick={"Dfsdf"} style={{ fontSize: "16px" }}>
-          <EyeOutlined style={{ fontSize: "16px" }} />
-          <span className="comment-action" style={{ fontSize: "12px" }}>
-            {feed.viewCount}
-          </span>
+        <span
+          // onClick={() => onActionClicked("like")}
+          style={{ fontSize: "16px" }}
+        >
+          {createElement(true ? HeartFilled : HeartOutlined)}
+          <span className="comment-action iconPositon">{questionDetails[0].likes}</span>
         </span>
       </Tooltip>,
 
-      <ShareAltOutlined style={{ fontSize: "16px" }} />,
+      <Tooltip key="comment-basic-like" title="View Count">
+        <span style={{ fontSize: "16px" }}>
+          <EyeOutlined style={{ fontSize: "16px" }} />
+          <span className="comment-action">{questionDetails[0].viewCount}</span>
+        </span>
+      </Tooltip>,
+
+      <ShareAltOutlined style={{ fontSize: "16px", paddingTop: "6px" }} />,
     ];
   };
 
   return (
+
+
     <div className="FeedContainer">
       <div id="FeedContent">
-        <Comment
-          actions={actions(feedContent)}
-          author={<a>{feedContent.name}</a>}
+        {questionDetails.map((item, index)=>(
+          <Comment
+          key={index}
+          actions={actions()}
+          
+          author={ <h3 style={{ color: "black" }}>
+                   
+          <b>{item.userName}</b>
+        </h3>}
           avatar={
             <Avatar
               size={{
@@ -198,31 +218,44 @@ function FeedDetail({ setShowDetailFeed, feedContent, user }) {
                 xl: 80,
                 xxl: 80,
               }}
-              src="/profile.png"
+              src={item.profilePic ? item.profilePic : "/profile.png"}
               alt="Han Solo"
             />
           }
-          content={<p style={{ fontSize: "16px" }}>{feedContent.userPost}</p>}
+          content={<p style={{ fontSize: "16px" }}>{item.question}</p>}
         />
 
-
+        ))}
+      
+        
 
         {/* Answer portal hidden based on user logged in*/}
         <div>
-          <Comment hidden={user!=null ? false : true}
-            avatar={<Avatar src={user} alt="Han Solo" />}
+          <Comment
+            hidden={user ? true : false}
+            avatar={<Avatar
+              src={user}
+              size={{
+                lg: 80,
+                md: 80,
+                sm: 80,
+                xs: 50,
+                xl: 80,
+                xxl: 80,
+              }}
+              alt="Han Solo"
+            />}
             content={<Editor onAnswerSubmit={onAnswerSubmit} />}
           />
         </div>
-        
 
         {/*Comments And Answers for each feed */}
-        {feedContent.details.map((feed, index) => {
+        {answers.map((feed, index) => {
           return (
-            <div key={"feed" + index}>
+            <div key={"answer" + index}>
               <Comment
-                actions={actionForFeedContent(feed)}
-                author={<a>{feed.name}</a>}
+                 actions={actionForFeedContent(feed)}
+                author={<a>{feed.userName}</a>}
                 avatar={
                   <Avatar
                     size="large"
@@ -230,7 +263,7 @@ function FeedDetail({ setShowDetailFeed, feedContent, user }) {
                     alt="Han Solo"
                   />
                 }
-                content={<p>{feed.userPost}</p>}
+                content={<p>{feed.answer}</p>}
               />
 
               <Divider />

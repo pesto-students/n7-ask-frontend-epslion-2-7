@@ -11,9 +11,10 @@
     font-feature-settings: 'tnum', "tnum";
     display: flex;
     flex-direction: column;
+ 
 }
 .ant-checkbox-group-item{
-    padding-bottom: 15px;;
+    padding-bottom: 15px;
 }
 .ant-checkbox-checked .ant-checkbox-inner {
     background-color: black;
@@ -22,3 +23,8 @@
   .ant-checkbox-input:hover{
     border-color: black;
   }
+  .SideBarOverflow:hover {
+    overflow: scroll;
+    height: 100vh;
+  }
+

@@ -1,52 +1,127 @@
-import React from "react";
+import React, { useState } from "react";
+import { Select } from "antd";
 import "./AskQuestion.css";
 import { Comment, Avatar, Form, Button, List, Input } from "antd";
 import { userContext } from "../userContext/userContext";
+import axios from "axios";
 const { TextArea } = Input;
-const Editor = ({ onChange, onSubmit, submitting, value }) => (
-  <>
-    <Form.Item>
-      <TextArea rows={4} onChange={onChange} value={value} />
-    </Form.Item>
-    <Form.Item>
-      <Button
-        className="askQuestionButton"
-        loading={submitting}
-        onClick={onSubmit}
-        htmlType="submit"       
-      >
-        Ask Question
-      </Button>
-    </Form.Item>
-  </>
-);
+const { Option } = Select;
 
-function AskQuestion() {
+const Interests = [
+  
+  "Nature",
+  "Technology",
+  "Movies",
+  "Space",
+  "Business",
+  "Travel",
+  "Health",
+  "Books",
+  "Science",
+  "Fashion",
+];
+const InterestsList = Interests.map((val, index) => (
+  
+  <Option key={index}>{val}</Option>
+));
 
-  const onSubmit =()=>{
-     //post request 
+const Editor = ({ submitting, value ,user}) => {
+  const [questionAsked, setQuestionAsked] = useState("");
+  const [selectedInterestsList, setSelectedInterestList] = useState([]);
 
+  function handleTextChange(e) {
+    setQuestionAsked(e.target.value);   
   }
+
+  function handleChange(value) {
+    console.log("selectedValue",value)
+    const newVal = value.map(val=>Number(val)+1)
+    setSelectedInterestList(newVal);
+    console.log(newVal)
+    //console.log(`selected ${value}`)
+  }
+
+  const onSubmit = async () => {
+    await axios.post(
+     "https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/question",
+     { question: questionAsked, interest: selectedInterestsList, expertId: "" },
+     { headers: { Authorization: `${user.token}` } }
+   ).then(res => {
+     if(res.data.success){
+       setQuestionAsked("")
+       setSelectedInterestList([])
+     }
+   })
+  
+
+   //post request
+ };
+
+  return (
+    <>
+      <Form.Item>
+        <TextArea
+          rows={4}
+          style={{ width: "100%", marginLeft: "-10px" }}
+          onChange={handleTextChange}
+          value={questionAsked}
+        />
+      </Form.Item>
+      <Form.Item>
+        <Select
+          className="QuestionInterestDomain"
+          mode="multiple"
+          allowClear
+          style={{ width: "80%" }}
+          placeholder="Please Select atleast one Interest"
+          value={selectedInterestsList.map(val=>Interests[`${val-1}`])}
+          onChange={handleChange}
+        >
+          {InterestsList}
+        </Select>
+        <Button
+          disabled={
+            !(questionAsked.length > 0 && selectedInterestsList.length > 0)
+          }
+          className="askQuestionButton"
+          loading={submitting}
+          onClick={onSubmit}
+          htmlType="submit"
+        >
+          Ask Question
+        </Button>
+      </Form.Item>
+    </>
+  );
+};
+
+function AskQuestion({ user }) {
+  
   return (
     <userContext.Consumer>
-      {({user, setUser}) => {
-        console.log(user)
-          return (
-            <div className="askQuestion">
-              <Comment
-                avatar={<Avatar src={user}  size={{
-                  lg: 80,
-                  md: 80,
-                  sm: 80,
-                  xs: 50,
-                  xl: 80,
-                  xxl: 80,
-                }} alt="Han Solo" />}
-                content={<Editor />}
-              />
-            </div>
-          );
-        
+      {({ user, setUser }) => {
+        console.log(user);
+        return (
+          <div className="askQuestion">
+            <Comment
+              avatar={
+                <Avatar
+                  src={user}
+                  size={{
+                    lg: 80,
+                    md: 80,
+                    sm: 80,
+                    xs: 50,
+                    xl: 80,
+                    xxl: 80,
+                  }}
+                  alt="Han Solo"
+                />
+              }
+              content={<Editor user={user}/>}
+            />
+          </div>
+        );
       }}
     </userContext.Consumer>
   );

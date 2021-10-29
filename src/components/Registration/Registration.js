@@ -22,7 +22,7 @@ const { Text, Title } = Typography;
 function Registration({setShowInterestPage}) {
 
   const history = useHistory();
-
+ const [emailExist, setEmailExistError]=useState("")
   const [Name, setName] = useState({
     firstClick: false,
     title: "",
@@ -47,9 +47,9 @@ function Registration({setShowInterestPage}) {
   };
 
   const errorValue = {
-    Name: <span>Enter a valid name</span>,
-    email: <span>Enter a valid email</span>,
-    password: <span>Enter a valid password</span>,
+    Name: <span style={{color:"red"}}>Enter a valid name</span>,
+    email: <span  style={{color:"red"}}>Enter a valid email</span>,
+    password: <span  style={{color:"red"}}>Enter a valid password</span>,
   };
 
   const handleChange = (type, event) => {
@@ -71,14 +71,18 @@ function Registration({setShowInterestPage}) {
       Regex.Password.test(Password.title)
     ) {
 
-       const response= await axios.post(`https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/user`, {name: Name.title, email:Email.title,password:Password.title});
-       console.log(response)
-        // let  res= true;
-        // if(res== true){
-        //   //move to interests page.
-        //   setShowInterestPage(true);
-        //   history.push("/interests")
-          
+       const response= await axios.post(`https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/user`, {name: Name.title, email:Email.title,password:Password.title}).catch(err=>{
+         return err.response
+       });
+      console.log(response);
+      if(response && response.status==200){
+        //console.log("aa rha h")
+       history.push('/login')
+      }
+      else if(response.data.message=="user with email Address is already exist"){
+        setEmailExistError("User Already Exists")
+      }
+      
         // }
     }
   };
@@ -86,7 +90,7 @@ function Registration({setShowInterestPage}) {
   return (
     
     <div className="container2 ">
-      <Card className="formSignup" title={<Title level={2}>Sign up for ASK</Title>}>
+      <Card className="formSignup" title={<Title  >SIGN UP </Title>}>
         <Form>
           <Form.Item>
             Name
@@ -145,6 +149,8 @@ function Registration({setShowInterestPage}) {
                
               
             <br />
+            <span style={{color:"red"}}> {emailExist}</span>
+           
             <br />
             <Button
               className="signUpBtn"

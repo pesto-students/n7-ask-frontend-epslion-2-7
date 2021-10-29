@@ -7,13 +7,14 @@ function AppContent({ whatToShow, onFeedClick }) {
   return (
     <>
       <userContext.Consumer>
-        {({user, setUser ,sort}) => {
+        {({user, setUser ,sort, searchQuery, toSort,selectedInterests}) => {
           return (
-            <>
-
-              {user ? <AskQuestion  /> : null}
-              <Feed whatToShow={whatToShow} onFeedClick={onFeedClick} user={user} sort={sort}  />
-            </>
+            
+              <div id="mainAskContent">
+              {user ? <AskQuestion  user={user}/> : null}
+              <Feed whatToShow={whatToShow} onFeedClick={onFeedClick} user={user} sort={sort} searchQuery={searchQuery} toSort={toSort} selectedInterests={selectedInterests} />
+              </div>
+            
           );
         }}
       </userContext.Consumer>

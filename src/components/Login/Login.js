@@ -34,6 +34,7 @@ export default function Login() {
     firstClick: false,
     title: "",
   });
+  const [InvalidUser, setInvalidUserError]=useState('');
   const [submitClicked, setSubmitClicked] = useState(false);
   let  history = useHistory();
 
@@ -42,15 +43,38 @@ export default function Login() {
     
   
   const handleSubmit = async (e,setUser) => {
-   setUser("./logo512.png");
-    history.push('/');
     setSubmitClicked(true);
-    e.preventDefault();
+    
+    if(Regex.Email.test(Email.title) &&
+    Regex.Password.test(Password.title)){
+
+      const response = await axios.post(`https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/login`, {email:Email.title, password:Password.title}).catch(err=>{
+        if(err.response.status==401){
+          setInvalidUserError("Invalid User Credentials")
+         // throw new Error('Invalid Credentials')
+        }
+      })
+       console.log(response)
+
+       if(response && response.status==200){
+         setInvalidUserError('')
+         console.log("userData==="+ response.data.data)
+        setUser(response.data.data);
+        history.push('/');
+       }
+      
+
+    }
+    
+   // setUser("./logo512.png");
+    //history.push('/');
+   
+    //e.preventDefault();
 
     //send the post request with the email and password and get a response
-   const response = await axios.post(`https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/login`, {email:Email.title,password:Password.title});
+   
     
-    console.log(response)
+    //console.log(response)
     //routeChange();
     
     
@@ -69,9 +93,7 @@ export default function Login() {
       <Card
         className="formLogin"
         title={
-          <Title  level={2} >
-           
-            Sign in
+          <Title  level={2}  > SIGN IN
           </Title>
         }
       >
@@ -118,8 +140,8 @@ export default function Login() {
               ? null
               : errorValue.password
             : null}
-          
-            
+         
+          <span style={{color:"red"}}>{InvalidUser}</span>
            
             </Form.Item>
             
@@ -129,7 +151,7 @@ export default function Login() {
             
             {/*ForgotPassword*/}
             
-           
+          
 
           <userContext.Consumer>
             {({user,setUser})=>{

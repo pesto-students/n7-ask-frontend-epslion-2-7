@@ -12,6 +12,10 @@
   width: 100%;
 }
 .ant-comment-actions{
+    width: 400px;
     display: flex;
     justify-content: space-between;
+}
+.iconPositon{
+    padding-left: 4px;
 }
