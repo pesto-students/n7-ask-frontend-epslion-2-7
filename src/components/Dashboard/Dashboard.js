@@ -63,14 +63,8 @@ function Dashboard({
             </Layout>
             
           )}
-          {/* SHow Feed Details */}
-          {showDetailFeed && (
-            <FeedDetail
-              setShowDetailFeed={setShowDetailFeed}
-              feedContent={feedContent}
-              user={user}
-            />
-          )}
+          
+          
         </>
       )}
     </userContext.Consumer>

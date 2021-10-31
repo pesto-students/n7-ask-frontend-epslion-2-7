@@ -67,7 +67,7 @@ const AnswerModal = ({ setIsModalVisible, isModalVisible, feed, user }) => {
   return (
     <>
       <Modal
-        title="Basic Modal"
+        title="Answer"
         visible={isModalVisible}
 
         onCancel={handleCancel}

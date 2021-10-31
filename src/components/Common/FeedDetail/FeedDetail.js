@@ -14,7 +14,7 @@ import {
 } from "@ant-design/icons";
 const { TextArea } = Input;
 
-const Editor = ({ user , questionId, selectedButton}) => {
+const Editor = ({ user , questionId, selectedButton, setanswerOrCommClicked, answerOrCommClicked}) => {
 
   const [textInput, setTextInput]= useState("");
 
@@ -33,6 +33,12 @@ const Editor = ({ user , questionId, selectedButton}) => {
       ).then(res => {
         if(res.data.success){
           setTextInput("")
+          if(answerOrCommClicked){
+            setanswerOrCommClicked(false)
+          }
+          else{
+            setanswerOrCommClicked(true)
+          }
           
         }
       })
@@ -46,6 +52,13 @@ const Editor = ({ user , questionId, selectedButton}) => {
       ).then(res => {
         if(res.data.success){
           setTextInput("")
+          if(answerOrCommClicked){
+            setanswerOrCommClicked(false)
+          }
+          else{
+            setanswerOrCommClicked(true)
+          }
+          
           
         }
       })
@@ -90,31 +103,70 @@ function FeedDetail({ setShowDetailFeed, feedContent, user }) {
   const [ questionDetails, setQuestionDetails ] = useState([{}]);
   const [answers, setAnswers]= useState([{}]);
   const [comments, setComments]= useState([{}]);
+  const [answerOrCommClicked, setanswerOrCommClicked]= useState(false)
+  const [likeToggle, setLikeToggle] = useState(false)
 
   useEffect( () => {
    
    async function fetchData(){
-    const questionReq = await axios.get(
-      `https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/question/${id}`
-    );
-    if (questionReq && questionReq.data.success) {
-      console.log(questionReq.data.data)
-      setQuestionDetails(questionReq.data.data);
-    }
-    const answerReq = await axios.get(
-      `https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/answers/${id}`
-    );
-    if(answerReq.data.success){
-      setAnswers(answerReq.data.data)
+     if(user){
+      const questionReq = await axios.get(
+        `https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/question/${id}`,
+        {
+          headers: { Authorization: `${user.token}` },
+        }
+      );
+      if (questionReq && questionReq.data.success) {
+        console.log(questionReq.data.data)
+        setQuestionDetails(questionReq.data.data);
+      }
+      const answerReq = await axios.get(
+        `https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/answers/${id}`,
+        {
+          headers: { Authorization: `${user.token}` },
+        }
+      );
+      if(answerReq.data.success){
+        setAnswers(answerReq.data.data)
+  
+      }
+      const commentsReq = await axios.get(
+        `https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/comments/${id}/question`,
+        {
+          headers: { Authorization: `${user.token}` },
+        }
+      );
+      if(commentsReq.data.success){
+        setComments(commentsReq.data.data)
+  
+      }
 
-    }
-    const commentsReq = await axios.get(
-      `https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/comments/${id}/question`
-    );
-    if(commentsReq.data.success){
-      setComments(commentsReq.data.data)
+     }
+     else{
+      const questionReq = await axios.get(
+        `https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/question/${id}`
+      );
+      if (questionReq && questionReq.data.success) {
+        console.log(questionReq.data.data)
+        setQuestionDetails(questionReq.data.data);
+      }
+      const answerReq = await axios.get(
+        `https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/answers/${id}`
+      );
+      if(answerReq.data.success){
+        setAnswers(answerReq.data.data)
+  
+      }
+      const commentsReq = await axios.get(
+        `https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/comments/${id}/question`
+      );
+      if(commentsReq.data.success){
+        setComments(commentsReq.data.data)
+  
+      }
 
-    }
+     }
+    
 
    }
    fetchData();
@@ -123,7 +175,7 @@ function FeedDetail({ setShowDetailFeed, feedContent, user }) {
     
 
     
-  },[id]);
+  },[id,answerOrCommClicked,likeToggle]);
   
 
   
@@ -132,12 +184,26 @@ function FeedDetail({ setShowDetailFeed, feedContent, user }) {
     console.log("onActionCLicked")
     if(user){
       console.log("onActionCLicked")
-      if(type=="like"){
-        let likeRes = await axios.post("https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/like", {typeId:feed.id, type:feedType, like: feed.isUserLiked ? 0 : 1})
-        if(likeRes && likeRes.data.success){
-          console.log("like succesfully added");
+      if(user){
+
+        if(type=="like"){
+          let likeRes = await axios.post("https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/like", {typeId:feed.id, type:feedType, like: feed.isUserLiked ? 0 : 1},
+          {
+            headers: { Authorization: `${user.token}` }
+          }
+          
+          )
+          if(likeRes && likeRes.data.success){
+            if(likeToggle){
+              setLikeToggle(false)
+            }else{
+              setLikeToggle(true)
+            }
+            console.log("like succesfully added");
+          }
         }
       }
+      
 
     }
    
@@ -199,7 +265,7 @@ function FeedDetail({ setShowDetailFeed, feedContent, user }) {
           onClick={() => onActionClicked("like",feed,feedType)}
           style={{ fontSize: "16px" }}
         >
-          {createElement(feed.isUserliked ? HeartFilled : HeartOutlined)}
+          {createElement(feed.isUserLiked ? HeartFilled : HeartOutlined)}
           <span className="comment-action iconPositon">{feed.likes}</span>
         </span>
       </Tooltip>,
@@ -241,10 +307,10 @@ function FeedDetail({ setShowDetailFeed, feedContent, user }) {
 
       <Tooltip key="comment-basic-like" title="Like">
         <span
-          // onClick={() => onActionClicked("like")}
+          onClick={() => onActionClicked("like",questionDetails[0],"question")}
           style={{ fontSize: "16px" }}
         >
-          {createElement(true ? HeartFilled : HeartOutlined)}
+          {createElement( questionDetails[0].isUserLiked ? HeartFilled : HeartOutlined)}
           <span className="comment-action iconPositon">{questionDetails[0].likes}</span>
         </span>
       </Tooltip>,
@@ -308,7 +374,7 @@ function FeedDetail({ setShowDetailFeed, feedContent, user }) {
              }}
              alt="Han Solo"
            />}
-           content={<Editor user={user} questionId={item.id} selectedButton={selectedButton}/>}
+           content={<Editor user={user} questionId={item.id} selectedButton={selectedButton} setanswerOrCommClicked={setanswerOrCommClicked} answerOrCommClicked={answerOrCommClicked}/>}
          />
        </div>
        </>

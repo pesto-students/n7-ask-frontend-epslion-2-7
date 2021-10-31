@@ -106,7 +106,7 @@ function AskQuestion({ user }) {
             <Comment
               avatar={
                 <Avatar
-                  src={user}
+                  src={user.profilePic ? user.ProfilePic : "./logo512.png"}
                   size={{
                     lg: 80,
                     md: 80,
