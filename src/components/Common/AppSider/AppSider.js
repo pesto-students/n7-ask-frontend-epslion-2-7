@@ -8,13 +8,38 @@ import {
   BuildOutlined,
 } from "@ant-design/icons";
 import axios from "axios";
-
+const InterestsFields1 = [
+  
+  "Nature",
+  "Technology",
+  "Movies",
+  "Space",
+  "Business",
+  "Travel",
+  "Health",
+  "Books",
+  "Science",
+  "Fashion",
+];
+const InterestsFields = [
+  
+  "Nature",
+  "Technology",
+  "Movies",
+  "Space",
+  "Business",
+  "Travel",
+  "Health",
+  "Books",
+  "Science",
+  "Fashion",
+];
 function AppSider({ selectedInterests, whatToShow,setWhatToShow, toSort, setSelectedInterests }) {
   const [interestCategory, setInterestCategory] = useState([]);
 
   useEffect(async () => {
-    const response = await axios.get(`http://localhost:3000/interests`);
-    setInterestCategory(response.data);
+    
+    setInterestCategory(InterestsFields);
   }, []);
 
   useEffect(async()=>{
@@ -29,7 +54,7 @@ function AppSider({ selectedInterests, whatToShow,setWhatToShow, toSort, setSele
   const onInterestsChecked = (checkedValue) => {
     setWhatToShow("interestsList")
     setSelectedInterests(checkedValue);
-    console.log("Selected Checkboxes"+ checkedValue)
+    // console.log("Selected Checkboxes"+ checkedValue)
   };
   const onFilterClick = (e, type) => {
     if (type == "sort") {
@@ -81,9 +106,7 @@ function AppSider({ selectedInterests, whatToShow,setWhatToShow, toSort, setSele
         <Menu.Divider />
         <Menu.ItemGroup className="sideBarMenu" key="interest" title="Interest">
           <Checkbox.Group
-            options={interestCategory.map(
-              (value) => value.charAt(0).toUpperCase() + value.substr(1)
-            )}
+            options={interestCategory}
             value={selectedInterests}
             onChange={onInterestsChecked}
           />

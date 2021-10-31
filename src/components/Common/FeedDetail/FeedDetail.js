@@ -14,27 +14,79 @@ import {
 } from "@ant-design/icons";
 const { TextArea } = Input;
 
-const Editor = ({ onChange, onAnswerSubmit, submitting, value }) => (
+const Editor = ({ user , questionId, selectedButton}) => {
+
+  const [textInput, setTextInput]= useState("");
+
+  function handleTextChange(e) {
+    setTextInput(e.target.value);   
+  }
+
+ 
+
+  const onAnswerSubmit = async () => {
+    if(selectedButton=="answers"){
+      await axios.post(
+        "https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/answer",
+        { answer: textInput, questionId: questionId  },
+        { headers: { Authorization: `${user.token}` } }
+      ).then(res => {
+        if(res.data.success){
+          setTextInput("")
+          
+        }
+      })
+
+    }
+    else{
+      await axios.post(
+        "https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/comment",
+        { type: "question", typeId: questionId , comment:textInput },
+        { headers: { Authorization: `${user.token}` } }
+      ).then(res => {
+        if(res.data.success){
+          setTextInput("")
+          
+        }
+      })
+
+    }
+    
+  
+
+   //post request
+ };
+
+
+  return(
   <>
     <Form.Item>
-      <TextArea rows={4} value={value} />
+      <TextArea rows={4} 
+       style={{ width: "100%", marginLeft: "-10px" }}
+       onChange={handleTextChange}
+       value={textInput} 
+       />
     </Form.Item>
     <Form.Item>
       <Button
+      disabled={!(textInput.length > 0)}
+      
+     
         size="large"
         className="answerBtn"
         htmlType="submit"
-        loading={submitting}
-        onClick={() => onAnswerSubmit(value)}
+        onClick={onAnswerSubmit}
       >
-        Answer
+      {selectedButton=="answers" ? "Answer" : "Comment"}
       </Button>
     </Form.Item>
   </>
-);
+  )
+};
 
 function FeedDetail({ setShowDetailFeed, feedContent, user }) {
   let { id } = useParams();
+  const [selectedButton, setSelectedButton ]  = useState("answers")
   const [ questionDetails, setQuestionDetails ] = useState([{}]);
   const [answers, setAnswers]= useState([{}]);
   const [comments, setComments]= useState([{}]);
@@ -56,13 +108,13 @@ function FeedDetail({ setShowDetailFeed, feedContent, user }) {
       setAnswers(answerReq.data.data)
 
     }
-    // const commentsReq = await axios.get(
-    //   `https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/comments/${id}`
-    // );
-    // if(commentsReq.data.success){
-    //   setComments(commentsReq.data.data)
+    const commentsReq = await axios.get(
+      `https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/comments/${id}/question`
+    );
+    if(commentsReq.data.success){
+      setComments(commentsReq.data.data)
 
-    // }
+    }
 
    }
    fetchData();
@@ -76,11 +128,25 @@ function FeedDetail({ setShowDetailFeed, feedContent, user }) {
 
   
 
-  const onActionClicked = (type, feed) => {};
+  const onActionClicked = async(type, feed,feedType) => {
+    console.log("onActionCLicked")
+    if(user){
+      console.log("onActionCLicked")
+      if(type=="like"){
+        let likeRes = await axios.post("https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/like", {typeId:feed.id, type:feedType, like: feed.isUserLiked ? 0 : 1})
+        if(likeRes && likeRes.data.success){
+          console.log("like succesfully added");
+        }
+      }
 
-  const onAnswerSubmit = (value) => {
-    //user to submit their answer.
+    }
+   
+
+
+    
   };
+
+  
 
   /*const onActionClicked = async (type, feed) => {
     if (user != null) {
@@ -126,24 +192,24 @@ function FeedDetail({ setShowDetailFeed, feedContent, user }) {
     }
   };*/
 
-  const actionForFeedContent = (feed) => {
+  const actionForFeedContent = (feed,feedType) => {
     return [
       <Tooltip key="comment-basic-like" title="Like">
         <span
-          // onClick={() => onActionClicked("like")}
+          onClick={() => onActionClicked("like",feed,feedType)}
           style={{ fontSize: "16px" }}
         >
-          {createElement(feed.liked ? HeartFilled : HeartOutlined)}
+          {createElement(feed.isUserliked ? HeartFilled : HeartOutlined)}
           <span className="comment-action iconPositon">{feed.likes}</span>
         </span>
       </Tooltip>,
 
-      <Tooltip key="comment-basic-like" title="Comment">
-        <span onClick={onActionClicked} style={{ fontSize: "16px" }}>
-          <CommentOutlined style={{ fontSize: "16px" }} />
-          <span className="comment-action iconPositon">{feed.comments}</span>
-        </span>
-      </Tooltip>,
+      // <Tooltip key="comment-basic-like" title="Comment">
+      //   <span onClick={onActionClicked} style={{ fontSize: "16px" }}>
+      //     <CommentOutlined style={{ fontSize: "16px" }} />
+      //     <span className="comment-action iconPositon">{feed.comments}</span>
+      //   </span>
+      // </Tooltip>,
 
       <Tooltip key="comment-basic-like" title="View Count">
         <span onClick={onActionClicked} style={{ fontSize: "16px" }}>
@@ -159,16 +225,16 @@ function FeedDetail({ setShowDetailFeed, feedContent, user }) {
   const actions = () => {
     return [
       <Button
-      role="tab"
+        role="tab"
         className="FeedDetailBtn"
-        
+        onClick={() => setSelectedButton("answers")}
       >
         {questionDetails[0].answers} Answers
       </Button>,
       <Button
       role="tab"
         className="FeedDetailBtn"
-        // nClick={() => onActionClicked("comments")}
+         onClick={() => setSelectedButton("comments")}
       >
         {questionDetails[0].comments} Comments
       </Button>,
@@ -200,6 +266,7 @@ function FeedDetail({ setShowDetailFeed, feedContent, user }) {
     <div className="FeedContainer">
       <div id="FeedContent">
         {questionDetails.map((item, index)=>(
+          <>
           <Comment
           key={index}
           actions={actions()}
@@ -225,36 +292,39 @@ function FeedDetail({ setShowDetailFeed, feedContent, user }) {
           content={<p style={{ fontSize: "16px" }}>{item.question}</p>}
         />
 
+         {/* Answer portal hidden based on user logged in*/}
+         <div>
+         <Comment
+           hidden={!user ? true : false}
+           avatar={<Avatar
+             src={user}
+             size={{
+               lg: 80,
+               md: 80,
+               sm: 80,
+               xs: 50,
+               xl: 80,
+               xxl: 80,
+             }}
+             alt="Han Solo"
+           />}
+           content={<Editor user={user} questionId={item.id} selectedButton={selectedButton}/>}
+         />
+       </div>
+       </>
+
         ))}
       
         
 
-        {/* Answer portal hidden based on user logged in*/}
-        <div>
-          <Comment
-            hidden={user ? true : false}
-            avatar={<Avatar
-              src={user}
-              size={{
-                lg: 80,
-                md: 80,
-                sm: 80,
-                xs: 50,
-                xl: 80,
-                xxl: 80,
-              }}
-              alt="Han Solo"
-            />}
-            content={<Editor onAnswerSubmit={onAnswerSubmit} />}
-          />
-        </div>
+       
 
         {/*Comments And Answers for each feed */}
-        {answers.map((feed, index) => {
+        { selectedButton=="answers" ? answers.map((feed, index) => {
           return (
             <div key={"answer" + index}>
               <Comment
-                 actions={actionForFeedContent(feed)}
+                 actions={actionForFeedContent(feed,"answer")}
                 author={<a>{feed.userName}</a>}
                 avatar={
                   <Avatar
@@ -269,6 +339,27 @@ function FeedDetail({ setShowDetailFeed, feedContent, user }) {
               <Divider />
             </div>
           );
+        }) : 
+        comments.map((feed, index)=>{
+          return(
+            <div key={"comment" + index}>
+              <Comment
+                 actions={actionForFeedContent(feed,"comment")}
+                author={<a>{feed.userName}</a>}
+                avatar={
+                  <Avatar
+                    size="large"
+                    src="https://os.alipayobjects.com/rmsportal/UXamdIxYSkXfoVo.jpg"
+                    alt="Han Solo"
+                  />
+                }
+                content={<p>{feed.comment}</p>}
+              />
+
+              <Divider />
+            </div>
+
+          )
         })}
       </div>
     </div>

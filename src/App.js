@@ -41,16 +41,16 @@ const App = () => {
              <Login/>
             </Route>
             <Route path="/signup">
-              <Registration setShowInterestPage={setShowInterestPage} />
+              <Registration setShowInterestPage={setShowInterestPage} setUser={setUser} />
             </Route>
             <Route path="/interests">
-              {showInterestPage ?<Interests /> : <Redirect to='/'/>}
-             
+              {showInterestPage ?<Interests user={user}/> : <Redirect to='/'/>}
+             {/* <Interests user={user}/> */}
               
             </Route>
             <Route path="/question/:id" >
             <AppHeader   setWhatToShow={setWhatToShow} setShowDetailFeed={setShowDetailFeed}/>
-              <FeedDetail/>
+              <FeedDetail user={user}/>
             </Route>
 
            

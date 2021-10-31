@@ -142,9 +142,15 @@ body {
   color: #fff;
   background: lightgray;
 }
+.ant-input-affix-wrapper-focused{
 
+  border-color: lightslategray;
+  box-shadow: 0 0 0 2px rgb(60 60 60 / 20%);
+}
 
-
+.ant-checkbox-input:focus{
+  outline: 2px solid #c00 !important
+}
 
 .ant-menu-vertical .ant-menu-item::after, .ant-menu-vertical-left .ant-menu-item::after, .ant-menu-vertical-right .ant-menu-item::after, .ant-menu-inline .ant-menu-item::after {
   position: absolute;
@@ -238,6 +244,12 @@ html {
   min-width: 0;
   background:white;
   transition: all 0.2s;
+}
+.ant-menu-item:active, .ant-menu-submenu-title:active {
+  background: #ababac;
+}
+a {
+  color:black;
 }
 
 @media (max-width: 767px) {

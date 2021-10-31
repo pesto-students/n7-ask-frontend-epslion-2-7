@@ -72,10 +72,14 @@ function UserProfile({ user }) {
       setType("question")
       updatePost(questions);
     } else if (type === "answers") {
-      setType("answers")
+      setType("answer")
      updatePost(answers);
-    } else {
-      setType("comments")
+    } 
+    else if (type === "reputation") {
+      setType("reputation")
+     updatePost(answers);
+    }else {
+      setType("comment")
       updatePost(comments);
     }
   };
@@ -116,11 +120,10 @@ function UserProfile({ user }) {
 
       <div id="summary">
         <Button
-        block
+         block
           className="userProfileButtons"
-          onClick={() => onButtonClick("questions")}
-         
-          
+          onClick={() => onButtonClick("questions")
+        }       
         >
           Summary
         </Button>
@@ -162,26 +165,28 @@ function UserProfile({ user }) {
 
       <div id="reputation">
         <Button
-        block
+          block
           className="userProfileButtons"
-          onClick={() => onButtonClick("questions")}
-         
+          onClick={() => onButtonClick("reputation")}
         >
           Reputation
         </Button>
       </div>
-
-      <div id="posts">
+      <div id="posts" >
+      {type=="reputation" ? <div style={{textAlign:"center", marginTop:"50px", fontSize:"60px"}}>{user.reputation}</div> : 
+        <>
         <Divider />
         <List
           size="large"
-          header={<div>Header</div>}
-          footer={<div>Footer</div>}
           bordered
           dataSource={posts}
-          renderItem={(item) => <List.Item>{item[`${type}`]}</List.Item>}
+          renderItem={(item) => <List.Item>{ item[`${type}`]}</List.Item>}
         />
-      </div>
+        </>
+     
+      }
+       </div>
+      
     </div>
   );
 }

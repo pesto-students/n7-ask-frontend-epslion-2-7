@@ -32,7 +32,7 @@ function Interest({ images, onInterestClick }) {
                   alt="example"
                   width={135}
                   height={100}
-                 src="./logo512.png"
+                 src={`./${item}.jpg`}
                 />
               }
             >

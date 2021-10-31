@@ -2,8 +2,8 @@
 .LayoutDimension{
     display: grid;
     place-items: center;
-    width: 600px;
-    height: 500px;
+    max-width: 600px;
+    max-height:400px;
     overflow-x: hidden;
     overflow-y: auto;
 }

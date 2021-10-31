@@ -19,7 +19,7 @@ import { Divider } from "antd";
 
 const { Text, Title } = Typography;
 
-function Registration({setShowInterestPage}) {
+function Registration({setShowInterestPage,setUser}) {
 
   const history = useHistory();
  const [emailExist, setEmailExistError]=useState("")
@@ -76,8 +76,11 @@ function Registration({setShowInterestPage}) {
        });
       console.log(response);
       if(response && response.status==200){
+
+        setShowInterestPage(true)
+        setUser(response.data.data)
         //console.log("aa rha h")
-       history.push('/login')
+       history.push('/interests')
       }
       else if(response.data.message=="user with email Address is already exist"){
         setEmailExistError("User Already Exists")

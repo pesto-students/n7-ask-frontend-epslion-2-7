@@ -20,6 +20,20 @@ import {
 import AnswerModal from "../Modal/AnswerModal";
 import { Redirect,Link } from "react-router-dom";
 
+const InterestsFields1 = [
+  "343",
+  "Nature",
+  "Technology",
+  "Movies",
+  "Space",
+  "Business",
+  "Travel",
+  "Health",
+  "Books",
+  "Science",
+  "Fashion",
+];
+
 const Feed = ({ whatToShow, onFeedClick, user, sort, toSort, searchQuery,selectedInterests}) => {
   const [currentFeed, setCurrentFeed] = useState();
   const [isEditing, setIsEditing] = useState(false);
@@ -63,7 +77,7 @@ const Feed = ({ whatToShow, onFeedClick, user, sort, toSort, searchQuery,selecte
         let response
         if(feed.isUserLiked){
           response = await axios.post(
-            "https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/like",{ typeId: feed.id, type: "question", like: 1 },
+            "https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/like",{ typeId: feed.id, type: "question", like: 0 },
             {
               
               headers: { Authorization: `${user.token}` }
@@ -74,7 +88,7 @@ const Feed = ({ whatToShow, onFeedClick, user, sort, toSort, searchQuery,selecte
         }
         else if(!feed.isUserLiked){
           response = await axios.post(
-            "https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/like",{ typeId: feed.id, type: "question", like: 0 },
+            "https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/like",{ typeId: feed.id, type: "question", like: 1 },
             {
             
               headers: { Authorization: `${user.token}` }
@@ -134,11 +148,17 @@ const Feed = ({ whatToShow, onFeedClick, user, sort, toSort, searchQuery,selecte
       } else if (whatToShow == "trending") {
       }
       else if(whatToShow=="interestsList"){
-        response = await axios.post(
-          `https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/interests`,{
-            selectedInterests
+        let checkedList = selectedInterests.map(value =>InterestsFields1.indexOf(value))
+        
+        response = await axios.get(
+          `https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/feed?page=1&filter=random&interests=${checkedList}`,
+          {
+            headers: { Authorization: `${user.token}` },
           }
+         
         )
+       
+        
       }
     } else {
       console.log("normalFeed")
@@ -149,11 +169,12 @@ const Feed = ({ whatToShow, onFeedClick, user, sort, toSort, searchQuery,selecte
         );
       }
       else if(whatToShow=="interestsList"){
+        let checkedList = selectedInterests.map(value =>InterestsFields1.indexOf(value))
+        
         response = await axios.post(
-          `https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/interests`,{
-            selectedInterests
-          }
+          `https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/feed?page=1&filter=random&interests=${checkedList}`
         )
+        
       }
       else if (whatToShow == "questions") {
       } else if (whatToShow == "answers") {
@@ -164,7 +185,7 @@ const Feed = ({ whatToShow, onFeedClick, user, sort, toSort, searchQuery,selecte
     if (response && response.data.success === true) {
       updateFeed(response.data.data);
     }
-  }, [whatToShow, user]);
+  }, [whatToShow, user, selectedInterests]);
 
   useEffect(() => {
     if (sort) {
@@ -341,9 +362,9 @@ const Feed = ({ whatToShow, onFeedClick, user, sort, toSort, searchQuery,selecte
                   />
                 }
                 content={
-                  <Link to={'question/'+feed.id}>
+                  <Link style={{color:"black"}} to={'question/'+feed.id}>
                   <p
-                    style={{ fontSize: "16px" }}
+                    style={{ fontSize: "16px", color:"black" }}
                     // onClick={() => onFeedClick(feed)}
                   >
                     {feed.question}

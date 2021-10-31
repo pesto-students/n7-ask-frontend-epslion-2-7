@@ -3,30 +3,48 @@ import "./Interests.css";
 import { Card, Input, Button } from "antd";
 import axios from "axios";
 import Interest from "./Interest/Interest";
+import { Redirect, useLocation, useHistory,Link } from "react-router-dom";
 import {
   SettingOutlined,
   EditOutlined,
   EllipsisOutlined,
   DownloadOutlined,
 } from "@ant-design/icons";
+const InterestsFields = [
+  
+  "Nature",
+  "Technology",
+  "Movies",
+  "Space",
+  "Business",
+  "Travel",
+  "Health",
+  "Books",
+  "Science",
+  "Fashion",
+];
+const InterestsFields1 = [
+  
+  "sdfsd",
+  "Nature",
+  "Technology",
+  "Movies",
+  "Space",
+  "Business",
+  "Travel",
+  "Health",
+  "Books",
+  "Science",
+  "Fashion",
+];
 
 
-
-function Interests() {
+function Interests({user}) {
+  const history = useHistory();
   const [images, getImages] = useState([]);
 
   const [userInterests, setInterest] = useState([]);
-  useEffect(async() => {
-    const response = await axios.get(
-      `http://localhost:3000/interests`
-    );    
-
-    getImages(response.data);
-    console.log(response.data)
-    return () => {
-      
-    }
-  }, [])
+  
 
 
   const onCardClick = (InterestId, index) => {
@@ -53,6 +71,22 @@ function Interests() {
    
   };
 
+  const onNextClick = async () =>{
+
+    if(userInterests.length>0 && user){
+      let selectedList = userInterests.map(val=>InterestsFields1.indexOf(val))
+      let response = await axios.post(`https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/interests`,selectedList,
+      {
+        headers: { Authorization: `${user.token}` },
+      })
+      console.log(response);
+      if(response&&response.data.success){
+        history.push('/login')
+      }
+    }
+    
+  }
+
   return (
     <div className="container3">
       <Card className="MainCard"
@@ -66,7 +100,7 @@ function Interests() {
         }
         actions={[
           <Button
-           
+            onClick={()=>{onNextClick()}}
             style={{ backgroundColor: "black", width:"200px" }}
             type="primary"
             shape="round"
@@ -76,7 +110,7 @@ function Interests() {
           </Button>,
         ]}
       >
-        <Interest images={images.map(value=>(value.charAt(0).toUpperCase()+value.substr(1) ))} onInterestClick={onCardClick} />
+        <Interest images={InterestsFields} onInterestClick={onCardClick} />
       </Card>
     </div>
   );
