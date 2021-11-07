@@ -5,7 +5,7 @@ import React, {
   useRef,
   useCallback,
 } from "react";
-import { Comment, Tooltip, Avatar, Divider, Button } from "antd";
+import { Comment, Tooltip, Avatar, Divider, Button, Tag } from "antd";
 import axios from "axios";
 import moment from "moment";
 import "./Feed.css";
@@ -19,6 +19,24 @@ import {
 } from "@ant-design/icons";
 import AnswerModal from "../Modal/AnswerModal";
 import { Redirect,Link } from "react-router-dom";
+import { PresetColorTypes } from "antd/lib/_util/colors";
+
+const labelColors =[
+
+  "magenta",
+  "red",
+  "volcano",
+  "orange",
+  "gold",
+  "lime",
+  "green",
+  "cyan",
+  "blue",
+  "geekblue",
+  "purple"
+
+  
+]
 
 const InterestsFields1 = [
   "343",
@@ -372,6 +390,7 @@ const Feed = ({ whatToShow, onFeedClick, user, sort, toSort, searchQuery,selecte
                   </Link>
                 }
               />
+              {feed.interests.map((interest, index)=><Tag color={labelColors[index%11]}>{interest.name}</Tag>)}
               <Divider />
             </div>
           );
@@ -413,6 +432,7 @@ const Feed = ({ whatToShow, onFeedClick, user, sort, toSort, searchQuery,selecte
                   
                 }
               />
+              {feed.interests.map((interest, index)=><Tag color={labelColors[index%11]}>{interest.name}</Tag>)}
               <Divider />
             </div>
           );
