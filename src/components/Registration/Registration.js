@@ -167,18 +167,17 @@ function Registration({setShowInterestPage,setUser}) {
 
           <Divider>OR</Divider>
           
-
-          <Button block icon={<GoogleOutlined />}>
-            Continue with Google
+          <Link className="signupLink" style={{color:"gray", textDecoration: "underline"}} to="/login">
+          <Button block >
+          Click here to login!
           </Button>
+          </Link>
           <br />
           <br />
-          <Button block icon={<FacebookOutlined />}>
-            Continue with Facebook
-          </Button>
+         
         </Form>
         <br />
-        <Link className="signupLink" style={{color:"gray", textDecoration: "underline"}} to="/login">Click here to login!</Link>
+        
       </Card>
     </div>
   

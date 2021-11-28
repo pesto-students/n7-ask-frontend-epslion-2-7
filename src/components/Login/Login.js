@@ -60,6 +60,9 @@ export default function Login() {
          setInvalidUserError('')
          console.log("userData==="+ response.data.data)
         setUser(response.data.data);
+        sessionStorage.setItem('userLoggedIn', true )
+        sessionStorage.setItem('user', JSON.stringify(response.data.data))
+        console.log(response.data.data)
         history.push('/');
        }
       
@@ -100,6 +103,7 @@ export default function Login() {
         <Form.Item className="textDesign">
           Email
           <Input
+            value={Email.title}
             onClick={() => {
               setEmail({ ...Email, firstClick: true });
             }}
@@ -123,6 +127,7 @@ export default function Login() {
         <Form.Item className="textDesign">
           Password
           <Input.Password
+          value={Password.title}
             onClick={() => {
               setPassword({ ...Password, firstClick: true });
             }}
@@ -174,15 +179,15 @@ export default function Login() {
           <br />
           <Divider>OR</Divider>
         
-          <Button block icon={<GoogleOutlined />}>
-            Sign in with Google
+          <Button block onClick={()=>{setEmail({...Email, firstClick:true, title:"adit@gmail.com"}); setPassword({...Password, firstClick:true, title:"12345qwert@"})}} >
+            Pre-Fill Email and Password
           </Button>
           <br />
-          <br />
+          {/* <br />
           <Button block icon={<FacebookOutlined />}>
             Sign in with Facebook
           </Button>
-          <br/>
+          <br/> */}
           
       </Card>
     </div>

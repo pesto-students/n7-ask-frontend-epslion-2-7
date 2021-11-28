@@ -24,14 +24,16 @@ function AppHeader({ setWhatToShow, setShowDetailFeed }) {
     setVisible(false);
   };
   const logOut = (setUser) => {
+    sessionStorage.setItem('userLoggedIn', false)
+    sessionStorage.setItem('user', '')
     setVisible(false);
     setUser(null);
   };
 
   const onSearchClick =()=>{
-    
     history.push('/')
-    setWhatToShow("search")
+                        setWhatToShow("search")
+    
 
   }
   return (
@@ -54,11 +56,19 @@ function AppHeader({ setWhatToShow, setShowDetailFeed }) {
                   <Input
                     className="searchBarField"
                     placeholder="Search"
-                    value={searchQuery}
+                    // value={searchQuery}
                     prefix={<SearchOutlined />}
-                    onClick={()=>onSearchClick()}
+                    // onClick={()=>onSearchClick()}
                     onChange={(e) => {
-                      setSearchQuery(e.target.value);
+                      if(e.target.value.length>=3){
+                        history.push('/')
+                        setWhatToShow("search")
+                        setSearchQuery(e.target.value);
+                      }
+                      else{
+                        setWhatToShow('home')
+                      }
+                     
                     }}
                     onPressEnter={console.log("msg" + searchQuery)}
                   />
@@ -83,7 +93,7 @@ function AppHeader({ setWhatToShow, setShowDetailFeed }) {
                           xxl: 50,
                         }}
                         src={
-                          user.profilePic ? user.profilePic : "./logo192.png"
+                          user.profilePic ?  user.profilePic  : "./Avatar 3.png"
                         }
                         onClick={showDrawer}
                       />
@@ -125,6 +135,7 @@ function AppHeader({ setWhatToShow, setShowDetailFeed }) {
                         closable={false}
                         onClose={onClose}
                         visible={visible}
+                       
                       >
                         <LeftMenu
                           setWhatToShow={setWhatToShow}

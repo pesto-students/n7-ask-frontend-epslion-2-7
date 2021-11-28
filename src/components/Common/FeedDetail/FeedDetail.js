@@ -181,6 +181,13 @@ function FeedDetail({ setShowDetailFeed, feedContent, user }) {
   
 
   const onActionClicked = async(type, feed,feedType) => {
+    await axios.post(
+      "https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/viewcount",
+      { typeId: feed.id, type: feedType },
+      {
+        headers: user ? { Authorization: `${user.token}` } : null,
+      }
+    );
     console.log("onActionCLicked")
     if(user){
       console.log("onActionCLicked")
@@ -283,8 +290,10 @@ function FeedDetail({ setShowDetailFeed, feedContent, user }) {
           <span className="comment-action iconPositon">{feed.views}</span>
         </span>
       </Tooltip>,
-
-      <ShareAltOutlined style={{ fontSize: "16px" }} />,
+      <Tooltip title="Click to Copy">
+        <ShareAltOutlined style={{ fontSize: "16px" }} onClick={() => {navigator.clipboard.writeText(window.location.host + "/question/" + feed.questionId)}} />
+      </Tooltip>
+      ,
     ];
   };
 
@@ -318,11 +327,13 @@ function FeedDetail({ setShowDetailFeed, feedContent, user }) {
       <Tooltip key="comment-basic-like" title="View Count">
         <span style={{ fontSize: "16px" }}>
           <EyeOutlined style={{ fontSize: "16px" }} />
-          <span className="comment-action">{questionDetails[0].viewCount}</span>
+          <span className="comment-action">{questionDetails[0].views}</span>
         </span>
       </Tooltip>,
-
-      <ShareAltOutlined style={{ fontSize: "16px", paddingTop: "6px" }} />,
+      <Tooltip title="Click to copy">
+        <ShareAltOutlined style={{ fontSize: "16px", paddingTop: "6px" }} onClick={() => {navigator.clipboard.writeText(window.location.host + "/question/" + questionDetails[0].id)}} />
+      </Tooltip>
+      ,
     ];
   };
 
@@ -399,7 +410,15 @@ function FeedDetail({ setShowDetailFeed, feedContent, user }) {
                     alt="Han Solo"
                   />
                 }
-                content={<p>{feed.answer}</p>}
+                content={<p onClick={async()=>{
+                  await axios.post(
+                    "https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/viewcount",
+                    { typeId: feed.id, type: "answer" },
+                    {
+                      headers: user ? { Authorization: `${user.token}` } : null,
+                    }
+                  );
+                }}>{feed.answer}</p>}
               />
 
               <Divider />
@@ -419,7 +438,16 @@ function FeedDetail({ setShowDetailFeed, feedContent, user }) {
                     alt="Han Solo"
                   />
                 }
-                content={<p>{feed.comment}</p>}
+                content={<p
+                  onClick={async()=>{
+                    await axios.post(
+                      "https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/viewcount",
+                      { typeId: feed.id, type: "comment" },
+                      {
+                        headers: user ? { Authorization: `${user.token}` } : null,
+                      }
+                    );
+                  }}>{feed.comment}</p>}
               />
 
               <Divider />

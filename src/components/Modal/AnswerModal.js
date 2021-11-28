@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
 import { Modal, Button, Comment, Avatar, Input, Form } from "antd";
+import { Redirect } from "react-router";
 const { TextArea } = Input;
 
 
@@ -24,6 +25,7 @@ const Editor = ({ user, questionId,setIsModalVisible }) => {
           setIsModalVisible(false)
         }
       });
+      
 
     //post request
   };

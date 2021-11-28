@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 import { Button } from "antd";
 import "./App.css";
@@ -14,13 +14,28 @@ import FeedDetail from "./components/Common/FeedDetail/FeedDetail";
 import Feed from "./components/Feed/Feed";
 
 
+
 const App = () => {
-  const [whatToShow, setWhatToShow] = useState("");
+
+  
+
+
+  const [whatToShow, setWhatToShow] = useState("home");
   const [showDetailFeed, setShowDetailFeed] = useState(false);
   const [user, setUser] = useState(null);
   const [sort, toSort]= useState(false);
   const[showInterestPage, setShowInterestPage]= useState(false);
   const [selectedInterests, setSelectedInterests] = useState([]);
+
+
+  useEffect (() =>{
+   
+    if(sessionStorage.getItem('userLoggedIn')){
+    
+      setUser(sessionStorage.getItem('user'))
+    }
+
+  },[])
 
   const[searchQuery, setSearchQuery]= useState("");
   return (

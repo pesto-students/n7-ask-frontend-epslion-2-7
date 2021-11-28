@@ -38,7 +38,7 @@ const LeftMenu = ({ setWhatToShow, setShowDetailFeed }) => {
         </a>
         
       </Menu.Item>
-      <Menu.Item key="answers"  className="leftMenuOptions">
+      {/* <Menu.Item key="answers"  className="leftMenuOptions">
         <a
           onClick={() => {
             onMenuClick("answers");
@@ -47,7 +47,7 @@ const LeftMenu = ({ setWhatToShow, setShowDetailFeed }) => {
           Answers
         </a>
         
-      </Menu.Item>
+      </Menu.Item> */}
       {/* <Menu.Item key="answers"  className="leftMenuOptions">
         <a onClick={() => onMenuClick("answers")}>Answers</a>
       </Menu.Item> */}

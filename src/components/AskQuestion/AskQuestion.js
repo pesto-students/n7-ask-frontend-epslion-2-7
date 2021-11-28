@@ -22,12 +22,13 @@ const Interests = [
 ];
 const InterestsList = Interests.map((val, index) => (
   
-  <Option key={index}>{val}</Option>
+  <Option key={val}>{val}</Option>
 ));
 
 const Editor = ({ submitting, value ,user}) => {
   const [questionAsked, setQuestionAsked] = useState("");
   const [selectedInterestsList, setSelectedInterestList] = useState([]);
+  const [selectedInterestsListCopy, setSelectedInterestListCopy] = useState([]);
 
   function handleTextChange(e) {
     setQuestionAsked(e.target.value);   
@@ -35,16 +36,17 @@ const Editor = ({ submitting, value ,user}) => {
 
   function handleChange(value) {
     console.log("selectedValue",value)
-    const newVal = value.map(val=>Number(val)+1)
-    setSelectedInterestList(newVal);
-    console.log(newVal)
+    const newVal = value.map(val=>Interests.indexOf(val)+1)
+    setSelectedInterestListCopy(newVal)
+    setSelectedInterestList(value);
+    // console.log(newVal)
     //console.log(`selected ${value}`)
   }
 
   const onSubmit = async () => {
     await axios.post(
      "https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/question",
-     { question: questionAsked, interest: selectedInterestsList, expertId: "" },
+     { question: questionAsked, interest: selectedInterestsListCopy, expertId: "" },
      { headers: { Authorization: `${user.token}` } }
    ).then(res => {
      if(res.data.success){
@@ -74,7 +76,7 @@ const Editor = ({ submitting, value ,user}) => {
           allowClear
           style={{ width: "80%" }}
           placeholder="Please Select atleast one Interest"
-          value={selectedInterestsList.map(val=>Interests[`${val-1}`])}
+          value={selectedInterestsList}
           onChange={handleChange}
         >
           {InterestsList}
@@ -106,7 +108,7 @@ function AskQuestion({ user }) {
             <Comment
               avatar={
                 <Avatar
-                  src={user.profilePic ? user.ProfilePic : "./logo512.png"}
+                  src={user.profilePic ? user.ProfilePic : "./Avatar 3.png"}
                   size={{
                     lg: 80,
                     md: 80,

@@ -25,9 +25,9 @@ import { Divider } from "antd";
 
 const { Text, Title } = Typography;
 const errorValue = {
-  email: <span>Enter a valid email</span>,
-  password: <span>Enter a valid password</span>,
-  dontMatch: <span>Password Doesn't Match</span>,
+  email: <span style={{color:"red"}}>Enter a valid email</span>,
+  password: <span style={{color:"red"}}>Enter a valid password</span>,
+  dontMatch: <span style={{color:"red"}}>Password Doesn't Match</span>,
 };
 const Regex = {
   Email:
@@ -73,6 +73,9 @@ function ResetPassword() {
         }
       );
       console.log(response);
+      if(response.status==200){
+        history.push('/login')
+      }
       
     }
     
@@ -90,7 +93,7 @@ function ResetPassword() {
 
   return (
     <div className="resetPassword">
-      <Card className="form" title={<Title>Reset Password</Title>}>
+      <Card className="ResetForm" title={<Title>Reset Password</Title>}>
         <Form.Item className="textDesign">
           Email
           <Input
@@ -157,9 +160,12 @@ function ResetPassword() {
               ? null
               : errorValue.dontMatch
             : null}
-          <br />
+         
+         
         </Form.Item>
-
+        <Link  style={{color:"gray", textDecoration: "underline"}} to="/login">Click here to login!</Link>
+       <br/><br/>
+       
         {/*ForgotPassword*/}
 
         <Button

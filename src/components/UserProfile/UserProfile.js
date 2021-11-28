@@ -109,7 +109,7 @@ function UserProfile({ user }) {
         <h1>{user.name}</h1>
         <div className="editIcon">
         <Avatar
-          src={userData.profilePic ? userData.profilePic : './logo512.png'}
+          src={userData.profilePic ? userData.profilePic : './Avatar 3.png'}
           size={{ xs: 100, sm: 150, md: 150, lg: 150, xl: 150, xxl: 150 }}
           icon={<UserOutlined />}
         />

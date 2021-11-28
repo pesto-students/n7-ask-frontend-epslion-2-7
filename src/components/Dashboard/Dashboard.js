@@ -37,9 +37,10 @@ function Dashboard({
           {!showDetailFeed && (
             
             <Layout>
-              <Affix   offsetTop={70.5}>
+              <Affix   offsetTop={70.5} >
               
               <Sider
+             
                 className="sider"
                 breakpoint="lg"
                 collapsedWidth="0"

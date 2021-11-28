@@ -18,11 +18,10 @@ import {
   EditFilled,
 } from "@ant-design/icons";
 import AnswerModal from "../Modal/AnswerModal";
-import { Redirect,Link } from "react-router-dom";
+import { Redirect, Link } from "react-router-dom";
 import { PresetColorTypes } from "antd/lib/_util/colors";
 
-const labelColors =[
-
+const labelColors = [
   "magenta",
   "red",
   "volcano",
@@ -33,10 +32,8 @@ const labelColors =[
   "cyan",
   "blue",
   "geekblue",
-  "purple"
-
-  
-]
+  "purple",
+];
 
 const InterestsFields1 = [
   "343",
@@ -52,12 +49,20 @@ const InterestsFields1 = [
   "Fashion",
 ];
 
-const Feed = ({ whatToShow, onFeedClick, user, sort, toSort, searchQuery,selectedInterests}) => {
+const Feed = ({
+  whatToShow,
+  onFeedClick,
+  user,
+  sort,
+  toSort,
+  searchQuery,
+  selectedInterests,
+}) => {
   const [currentFeed, setCurrentFeed] = useState();
   const [isEditing, setIsEditing] = useState(false);
   const [feeds, updateFeed] = useState([]);
   const [pageNumber, setPageNumber] = useState(1);
-  const [hasMore, setHasMore] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [modalFeed, setModalFeed] = useState([]);
@@ -68,7 +73,7 @@ const Feed = ({ whatToShow, onFeedClick, user, sort, toSort, searchQuery,selecte
       if (observer.current) observer.current.disconnect();
       observer.current = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting) {
-          setPageNumber((prevPageNumber) => prevPageNumber + 1);
+          if (hasMore) setPageNumber((prevPageNumber) => prevPageNumber + 1);
         }
       });
       if (node) observer.current.observe(node);
@@ -86,35 +91,38 @@ const Feed = ({ whatToShow, onFeedClick, user, sort, toSort, searchQuery,selecte
   };
 
   const onActionClicked = async (type, feed) => {
+    await axios.post(
+      "https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/viewcount",
+      { typeId: feed.id, type: "question" },
+      {
+        headers: user ? { Authorization: `${user.token}` } : null,
+      }
+    );
     if (user != null) {
       setCurrentFeed(feed);
 
       let feedsCopy = feeds;
-     
+
       if (type == "like") {
-        let response
-        if(feed.isUserLiked){
+        let response;
+        if (feed.isUserLiked) {
           response = await axios.post(
-            "https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/like",{ typeId: feed.id, type: "question", like: 0 },
+            "https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/like",
+            { typeId: feed.id, type: "question", like: 0 },
             {
-              
-              headers: { Authorization: `${user.token}` }
+              headers: { Authorization: `${user.token}` },
             }
-          )
-
-
-        }
-        else if(!feed.isUserLiked){
+          );
+        } else if (!feed.isUserLiked) {
           response = await axios.post(
-            "https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/like",{ typeId: feed.id, type: "question", like: 1 },
+            "https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/like",
+            { typeId: feed.id, type: "question", like: 1 },
             {
-            
-              headers: { Authorization: `${user.token}` }
+              headers: { Authorization: `${user.token}` },
             }
-          )
-
+          );
         }
-        if(response.data.success && feed.isUserLiked){
+        if (response.data.success && feed.isUserLiked) {
           feedsCopy.map((value) => {
             if (value.id == feed.id) {
               value.likes = value.likes - 1;
@@ -124,9 +132,7 @@ const Feed = ({ whatToShow, onFeedClick, user, sort, toSort, searchQuery,selecte
           setCurrentFeed({ ...feed, liked: false });
           console.log(feedsCopy);
           updateFeed(feedsCopy);
-
-        }
-        else if(response.data.success && !feed.isUserLiked){
+        } else if (response.data.success && !feed.isUserLiked) {
           feedsCopy.map((value) => {
             if (value.id == feed.id) {
               value.likes = value.likes + 1;
@@ -136,12 +142,7 @@ const Feed = ({ whatToShow, onFeedClick, user, sort, toSort, searchQuery,selecte
           setCurrentFeed({ ...feed, liked: true });
           console.log("liked");
           updateFeed(feedsCopy);
-
         }
-
-        
-        
-       
       }
     }
   };
@@ -151,9 +152,8 @@ const Feed = ({ whatToShow, onFeedClick, user, sort, toSort, searchQuery,selecte
     setPageNumber(1);
     let response;
     if (user) {
-      
       if (whatToShow == "home") {
-        console.log("userFeed")
+        console.log("userFeed");
         response = await axios.get(
           `https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/feed?page=1&filter=random&interests=`,
           {
@@ -164,37 +164,34 @@ const Feed = ({ whatToShow, onFeedClick, user, sort, toSort, searchQuery,selecte
       } else if (whatToShow == "answers") {
       } else if (whatToShow == "random") {
       } else if (whatToShow == "trending") {
-      }
-      else if(whatToShow=="interestsList"){
-        let checkedList = selectedInterests.map(value =>InterestsFields1.indexOf(value))
-        
+      } else if (whatToShow == "interestsList") {
+        let checkedList = selectedInterests.map((value) =>
+          InterestsFields1.indexOf(value)
+        );
+
         response = await axios.get(
           `https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/feed?page=1&filter=random&interests=${checkedList}`,
           {
             headers: { Authorization: `${user.token}` },
           }
-         
-        )
-       
-        
+        );
       }
     } else {
-      console.log("normalFeed")
+      console.log("normalFeed");
       if (whatToShow == "home") {
         response = await axios.get(
           `https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/feed`,
           { params: { page: 1 } }
         );
-      }
-      else if(whatToShow=="interestsList"){
-        let checkedList = selectedInterests.map(value =>InterestsFields1.indexOf(value))
-        
-        response = await axios.post(
+      } else if (whatToShow == "interestsList") {
+        let checkedList = selectedInterests.map((value) =>
+          InterestsFields1.indexOf(value)
+        );
+
+        response = await axios.get(
           `https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/feed?page=1&filter=random&interests=${checkedList}`
-        )
-        
-      }
-      else if (whatToShow == "questions") {
+        );
+      } else if (whatToShow == "questions") {
       } else if (whatToShow == "answers") {
       } else if (whatToShow == "random") {
       } else if (whatToShow == "trending") {
@@ -237,6 +234,7 @@ const Feed = ({ whatToShow, onFeedClick, user, sort, toSort, searchQuery,selecte
           cancelToken: new axios.CancelToken((c) => (cancel = c)),
         })
           .then((response) => {
+            if (response.data.data.length == 0) setHasMore(false);
             updateFeed((prevFeedData) => {
               return [...new Set([...prevFeedData, ...response.data.data])];
             });
@@ -253,6 +251,7 @@ const Feed = ({ whatToShow, onFeedClick, user, sort, toSort, searchQuery,selecte
     }
 
     if (response && response.data.success === true && whatToShow != "search") {
+      if (response.data.data.length == 0) setHasMore(false);
       updateFeed((prevFeedData) => {
         return [...new Set([...prevFeedData, ...response.data.data])];
       });
@@ -313,28 +312,34 @@ const Feed = ({ whatToShow, onFeedClick, user, sort, toSort, searchQuery,selecte
       </Tooltip>,
 
       <Tooltip key="comment-basic-like" title="Comment">
-        <span
-          onClick={onActionClicked}
-          style={{ fontSize: "16px", color: "black" }}
-        >
-          <CommentOutlined style={{ fontSize: "16px" }} />
-          <span className="comment-action iconPositon">{feed.comments}</span>
-        </span>
+        <Link to={"question/" + feed.id}>
+          <span
+           
+            style={{ fontSize: "16px", color: "black" }}
+          >
+            <CommentOutlined style={{ fontSize: "16px" }} />
+            <span className="comment-action iconPositon">{feed.comments}</span>
+          </span>
+        </Link>
       </Tooltip>,
 
       <Tooltip key="comment-basic-like" title="View Count">
         <span
-          onClick={onActionClicked}
+          
           style={{ fontSize: "16px", color: "black" }}
         >
           <EyeOutlined style={{ fontSize: "16px" }} />
-          <span className="comment-action iconPositon">{feed.viewCount}</span>
+          <span className="comment-action iconPositon">{feed.views}</span>
         </span>
       </Tooltip>,
-
-      <ShareAltOutlined
+      <Tooltip title="Click to Copy">
+        <ShareAltOutlined
+      onClick={() => {navigator.clipboard.writeText(window.location.host + "/question/" + feed.id)}}
         style={{ fontSize: "16px", paddingTop: "6px", color: "black" }}
-      />,
+      />
+
+      </Tooltip>
+      ,
     ];
 
     if (whatToShow == "answers") {
@@ -353,7 +358,7 @@ const Feed = ({ whatToShow, onFeedClick, user, sort, toSort, searchQuery,selecte
       />
       {feeds.map((feed, index) => {
         if (feeds.length === index + 1) {
-          console.log("no of times you are here")
+          console.log("no of times you are here");
           return (
             <div key={index} ref={lastFeedElementRef}>
               <Comment
@@ -361,7 +366,6 @@ const Feed = ({ whatToShow, onFeedClick, user, sort, toSort, searchQuery,selecte
                 actions={actions(feed)}
                 author={
                   <h3 style={{ color: "black" }}>
-                   
                     <b>{feed.userName}</b>
                   </h3>
                 }
@@ -380,17 +384,29 @@ const Feed = ({ whatToShow, onFeedClick, user, sort, toSort, searchQuery,selecte
                   />
                 }
                 content={
-                  <Link style={{color:"black"}} to={'question/'+feed.id}>
-                  <p
-                    style={{ fontSize: "16px", color:"black" }}
-                    // onClick={() => onFeedClick(feed)}
-                  >
-                    {feed.question}
-                  </p>
+                  <Link style={{ color: "black" }} to={"question/" + feed.id}>
+                    <p
+                      style={{ fontSize: "16px", color: "black" }}
+                      onClick={async () => {
+                        await axios.post(
+                          "https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/viewcount",
+                          { typeId: feed.id, type: "question" },
+                          {
+                            headers: user
+                              ? { Authorization: `${user.token}` }
+                              : null,
+                          }
+                        );
+                      }}
+                    >
+                      {feed.question}
+                    </p>
                   </Link>
                 }
               />
-              {feed.interests.map((interest, index)=><Tag color={labelColors[index%11]}>{interest.name}</Tag>)}
+              {feed.interests.map((interest, index) => (
+                <Tag color={labelColors[index % 11]}>{interest.name}</Tag>
+              ))}
               <Divider />
             </div>
           );
@@ -420,19 +436,29 @@ const Feed = ({ whatToShow, onFeedClick, user, sort, toSort, searchQuery,selecte
                   />
                 }
                 content={
-                  <Link to={'question/'+feed.id}>
+                  <Link to={"question/" + feed.id}>
                     <p
-                    style={{ fontSize: "16px" }}
-                    // onClick={() => onFeedClick(feed)}
-                  >
-                    {feed.question}
-                  </p>
-                  
+                      style={{ fontSize: "16px" }}
+                      onClick={async () => {
+                        await axios.post(
+                          "https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/viewcount",
+                          { typeId: feed.id, type: "question" },
+                          {
+                            headers: user
+                              ? { Authorization: `${user.token}` }
+                              : null,
+                          }
+                        );
+                      }}
+                    >
+                      {feed.question}
+                    </p>
                   </Link>
-                  
                 }
               />
-              {feed.interests.map((interest, index)=><Tag color={labelColors[index%11]}>{interest.name}</Tag>)}
+              {feed.interests.map((interest, index) => (
+                <Tag color={labelColors[index % 11]}>{interest.name}</Tag>
+              ))}
               <Divider />
             </div>
           );
