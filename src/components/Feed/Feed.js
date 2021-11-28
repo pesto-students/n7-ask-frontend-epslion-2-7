@@ -73,7 +73,7 @@ const Feed = ({
       if (observer.current) observer.current.disconnect();
       observer.current = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting) {
-          if (hasMore) setPageNumber((prevPageNumber) => prevPageNumber + 1);
+           setPageNumber((prevPageNumber) => prevPageNumber + 1);
         }
       });
       if (node) observer.current.observe(node);
