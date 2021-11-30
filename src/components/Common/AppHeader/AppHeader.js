@@ -32,7 +32,7 @@ function AppHeader({ setWhatToShow, setShowDetailFeed }) {
 
   const onSearchClick =()=>{
     history.push('/')
-                        setWhatToShow("search")
+    setWhatToShow("search")
     
 
   }

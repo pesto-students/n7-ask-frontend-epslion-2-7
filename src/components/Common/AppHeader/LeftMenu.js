@@ -31,7 +31,7 @@ const LeftMenu = ({ setWhatToShow, setShowDetailFeed }) => {
       <Menu.Item key="questions"  className="leftMenuOptions">
         <a
           onClick={() => {
-            onMenuClick("questions");
+            onMenuClick("home");
           }}
         >
           Questions

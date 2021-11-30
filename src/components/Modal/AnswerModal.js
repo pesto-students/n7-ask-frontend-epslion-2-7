@@ -5,7 +5,7 @@ import { Redirect } from "react-router";
 const { TextArea } = Input;
 
 
-const Editor = ({ user, questionId,setIsModalVisible }) => {
+const Editor = ({ user, questionId,setIsModalVisible,updateFeed, feeds, feed, setCurrentFeed }) => {
   const [textInput, setTextInput] = useState("");
 
   function handleTextChange(e) {
@@ -23,6 +23,15 @@ const Editor = ({ user, questionId,setIsModalVisible }) => {
         if (res.data.success) {
           setTextInput("");
           setIsModalVisible(false)
+          console.log(feed)
+          let feedsCopy = feeds;
+          feedsCopy.map((val)=>{
+            if(val.id==feed.id){
+              val.answers=val.answers+1
+            }
+          })
+          setCurrentFeed({...feed, answers: feed.answers + 1})
+          updateFeed(feedsCopy)
         }
       });
       
@@ -55,7 +64,7 @@ const Editor = ({ user, questionId,setIsModalVisible }) => {
   );
 };
 
-const AnswerModal = ({ setIsModalVisible, isModalVisible, feed, user }) => {
+const AnswerModal = ({ setIsModalVisible, isModalVisible, feed, user, updateFeed, feeds , setCurrentFeed}) => {
   const showModal = () => {
     setIsModalVisible(true);
   };
@@ -120,7 +129,7 @@ const AnswerModal = ({ setIsModalVisible, isModalVisible, feed, user }) => {
               alt="Han Solo"
             />
           }
-          content={<Editor user={user} questionId={feed.id} setIsModalVisible={setIsModalVisible}/>}
+          content={<Editor user={user} questionId={feed.id} setIsModalVisible={setIsModalVisible} updateFeed={updateFeed} feeds={feeds} feed={feed} setCurrentFeed={setCurrentFeed}/>}
         />
       </Modal>
     </>

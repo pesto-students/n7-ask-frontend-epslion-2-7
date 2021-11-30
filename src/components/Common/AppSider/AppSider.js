@@ -44,15 +44,15 @@ function AppSider({ selectedInterests, whatToShow,setWhatToShow, toSort, setSele
 
   useEffect(async()=>{
 
-    if(whatToShow!="interestsList"){
-      console.log("clear")
-      setSelectedInterests([])
-    }
+    // if(whatToShow!="interestsList"){
+    //   console.log("clear")
+    //   setSelectedInterests([])
+    // }
 
   },[whatToShow])
 
   const onInterestsChecked = (checkedValue) => {
-    setWhatToShow("interestsList")
+    // setWhatToShow("home")
     setSelectedInterests(checkedValue);
     // console.log("Selected Checkboxes"+ checkedValue)
   };
@@ -73,18 +73,18 @@ function AppSider({ selectedInterests, whatToShow,setWhatToShow, toSort, setSele
         selectable={false}
         mode="inline"
       >
-        <Menu.ItemGroup key="filter" icon={<FilterOutlined />} title="Filter">
-          <Menu.Item
+         <Menu.ItemGroup key="filter" icon={<FilterOutlined />} title="Filter">
+          {/* <Menu.Item
             key="1"
             icon={<TagsOutlined />}
             onClick={(e) => {
               onFilterClick(e, "trending");
-            }}
+            }} 
           >
             Trending
-          </Menu.Item>
+          </Menu.Item> */}
           <Menu.Item
-            key="2"
+            key="1"
             icon={<SortDescendingOutlined />}
             onClick={(e) => {
               onFilterClick(e, "sort");
@@ -92,7 +92,7 @@ function AppSider({ selectedInterests, whatToShow,setWhatToShow, toSort, setSele
           >
             Sort by Most Liked
           </Menu.Item>
-          <Menu.Item
+          {/* <Menu.Item
             key="3"
             icon={<BuildOutlined />}
             onClick={(e) => {
@@ -100,7 +100,7 @@ function AppSider({ selectedInterests, whatToShow,setWhatToShow, toSort, setSele
             }}
           >
             Random
-          </Menu.Item>
+          </Menu.Item> */}
         </Menu.ItemGroup>
         <Menu.Divider />
         <Menu.Divider />

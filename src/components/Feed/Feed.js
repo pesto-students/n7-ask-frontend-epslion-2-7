@@ -73,7 +73,9 @@ const Feed = ({
       if (observer.current) observer.current.disconnect();
       observer.current = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting) {
-           setPageNumber((prevPageNumber) => prevPageNumber + 1);
+          if(hasMore){
+            setPageNumber((prevPageNumber) => prevPageNumber + 1);
+          }
         }
       });
       if (node) observer.current.observe(node);
@@ -82,7 +84,7 @@ const Feed = ({
   );
 
   const ClickForModal = (feed) => {
-    if (user != null) {
+    if (user) {
       setIsModalVisible(true);
       setModalFeed(feed);
     } else {
@@ -148,61 +150,51 @@ const Feed = ({
   };
 
   useEffect(async () => {
+    window.scrollTo(0, 0)
     updateFeed([]);
     setPageNumber(1);
-    let response;
-    if (user) {
-      if (whatToShow == "home") {
-        console.log("userFeed");
-        response = await axios.get(
-          `https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/feed?page=1&filter=random&interests=`,
-          {
-            headers: { Authorization: `${user.token}` },
-          }
-        );
-      } else if (whatToShow == "questions") {
-      } else if (whatToShow == "answers") {
-      } else if (whatToShow == "random") {
-      } else if (whatToShow == "trending") {
-      } else if (whatToShow == "interestsList") {
-        let checkedList = selectedInterests.map((value) =>
-          InterestsFields1.indexOf(value)
-        );
+    
 
-        response = await axios.get(
-          `https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/feed?page=1&filter=random&interests=${checkedList}`,
-          {
-            headers: { Authorization: `${user.token}` },
-          }
-        );
-      }
-    } else {
-      console.log("normalFeed");
-      if (whatToShow == "home") {
-        response = await axios.get(
-          `https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/feed`,
-          { params: { page: 1 } }
-        );
-      } else if (whatToShow == "interestsList") {
-        let checkedList = selectedInterests.map((value) =>
-          InterestsFields1.indexOf(value)
-        );
+    if (whatToShow == "home") {
+      let response;
+      let checkedList = selectedInterests.map((value) =>
+        InterestsFields1.indexOf(value)
+      );
+      console.log("userFeed");
+      response = await axios.get(
+        `https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/feed?page=1&filter=random&interests=${checkedList}`,
+          user ? {headers: { Authorization: `${user.token}` } } : ''
+      );
 
-        response = await axios.get(
-          `https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/feed?page=1&filter=random&interests=${checkedList}`
-        );
-      } else if (whatToShow == "questions") {
-      } else if (whatToShow == "answers") {
-      } else if (whatToShow == "random") {
-      } else if (whatToShow == "trending") {
+      if (response && response.data.success === true) {
+        if (response.data.data.length == 0) setHasMore(false); else setHasMore(true);
+        updateFeed(response.data.data);
       }
     }
-    if (response && response.data.success === true) {
-      updateFeed(response.data.data);
+    else if(whatToShow=="search"){
+      let cancel;
+    axios({
+      method: "GET",
+      url: `https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/search`,
+      params: { page: 1, q: searchQuery },
+      headers: user ? { Authorization: `${user.token}` } : "",
+      cancelToken: new axios.CancelToken((c) => (cancel = c)),
+    })
+      .then((response) => {
+        if (response.data.data.length == 0) setHasMore(false); else setHasMore(true);
+        updateFeed(response.data.data);
+      })
+      .catch((e) => {
+        if (axios.isCancel(e)) return;
+      });
+    return () => cancel();
     }
-  }, [whatToShow, user, selectedInterests]);
+
+    
+  }, [whatToShow, user, selectedInterests,searchQuery]);
 
   useEffect(() => {
+    window.scrollTo(0, 0)
     if (sort) {
       let newData = [...feeds]
         .sort((a, b) => (a.likes > b.likes ? 1 : b.likes > a.likes ? -1 : 0))
@@ -213,79 +205,52 @@ const Feed = ({
   }, [sort]);
 
   useEffect(async () => {
-    let response;
-    if (user) {
-      if (whatToShow == "home") {
-        console.log("when user is logged in " + user.token);
-        response = await axios.get(
-          `https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/feed?page=${pageNumber}&filter=random&interests=`,
-          {
-            headers: { Authorization: `${user.token}` },
-          }
-        );
-      }
-    } else {
-      if (whatToShow == "search") {
-        let cancel;
-        axios({
-          method: "GET",
-          url: `https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/search`,
-          params: { page: pageNumber, q: searchQuery },
-          cancelToken: new axios.CancelToken((c) => (cancel = c)),
-        })
-          .then((response) => {
-            if (response.data.data.length == 0) setHasMore(false);
-            updateFeed((prevFeedData) => {
-              return [...new Set([...prevFeedData, ...response.data.data])];
-            });
-          })
-          .catch((e) => {
-            if (axios.isCancel(e)) return;
-          });
-        return () => cancel();
-      }
-      response = await axios.get(
-        `https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/feed`,
-        { params: { page: pageNumber } }
+    if (whatToShow == "home") {
+      let checkedList = selectedInterests.map((value) =>
+        InterestsFields1.indexOf(value)
       );
+
+      let response = await axios.get(
+        `https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/feed?page=${pageNumber}&filter=random&interests=${checkedList}`,
+
+        user ? { headers: { Authorization: `${user.token}` } } : ""
+      );
+
+      if (response && response.data.success) {
+        if (response.data.data.length == 0) setHasMore(false); else setHasMore(true);
+        updateFeed((prevFeedData) => {
+          return [...new Set([...prevFeedData, ...response.data.data])];
+        });
+      }
+    } else if (whatToShow == "search") {
+      let cancel;
+      axios({
+        method: "GET",
+        url: `https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/search`,
+        params: { page: pageNumber, q: searchQuery },
+        headers: user ? { Authorization: `${user.token}` } : "",
+        cancelToken: new axios.CancelToken((c) => (cancel = c)),
+      })
+        .then((response) => {
+          if (response.data.data.length == 0) setHasMore(false); else setHasMore(true);
+          updateFeed((prevFeedData) => {
+            return [...new Set([...prevFeedData, ...response.data.data])];
+          });
+        })
+        .catch((e) => {
+          if (axios.isCancel(e)) return;
+        });
+      return () => cancel();
     }
-
-    if (response && response.data.success === true && whatToShow != "search") {
-      if (response.data.data.length == 0) setHasMore(false);
-      updateFeed((prevFeedData) => {
-        return [...new Set([...prevFeedData, ...response.data.data])];
-      });
-    }
-
-    // const response = await axios.get(`http://localhost:3000/${whatToShow}`);
-
-    // updateFeed(response.data);
-    // console.log(feeds);
-
-    console.log("mounted");
-
-    return () => console.log("unmounting...");
   }, [pageNumber]);
 
   //search Query
-  useEffect(async () => {
-    updateFeed([]);
-
-    let cancel;
-    axios({
-      method: "GET",
-      url: `https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/search`,
-      params: { page: 1, q: searchQuery },
-      cancelToken: new axios.CancelToken((c) => (cancel = c)),
-    })
-      .then((response) => {
-        updateFeed(response.data.data);
-      })
-      .catch((e) => {
-        if (axios.isCancel(e)) return;
-      });
-    return () => cancel();
-  }, [searchQuery]);
+  // useEffect(async () => {
+  //   window.scrollTo(0, 0)
+  //   updateFeed([]);
+  //   setPageNumber(1);
+    
+  // }, [searchQuery]);
 
   const actions = (feed) => {
     let FeedActions = [
@@ -313,10 +278,7 @@ const Feed = ({
 
       <Tooltip key="comment-basic-like" title="Comment">
         <Link to={"question/" + feed.id}>
-          <span
-           
-            style={{ fontSize: "16px", color: "black" }}
-          >
+          <span style={{ fontSize: "16px", color: "black" }}>
             <CommentOutlined style={{ fontSize: "16px" }} />
             <span className="comment-action iconPositon">{feed.comments}</span>
           </span>
@@ -324,22 +286,21 @@ const Feed = ({
       </Tooltip>,
 
       <Tooltip key="comment-basic-like" title="View Count">
-        <span
-          
-          style={{ fontSize: "16px", color: "black" }}
-        >
+        <span style={{ fontSize: "16px", color: "black" }}>
           <EyeOutlined style={{ fontSize: "16px" }} />
           <span className="comment-action iconPositon">{feed.views}</span>
         </span>
       </Tooltip>,
       <Tooltip title="Click to Copy">
         <ShareAltOutlined
-      onClick={() => {navigator.clipboard.writeText(window.location.host + "/question/" + feed.id)}}
-        style={{ fontSize: "16px", paddingTop: "6px", color: "black" }}
-      />
-
-      </Tooltip>
-      ,
+          onClick={() => {
+            navigator.clipboard.writeText(
+              window.location.host + "/question/" + feed.id
+            );
+          }}
+          style={{ fontSize: "16px", paddingTop: "6px", color: "black" }}
+        />
+      </Tooltip>,
     ];
 
     if (whatToShow == "answers") {
@@ -355,6 +316,9 @@ const Feed = ({
         isModalVisible={isModalVisible}
         feed={modalFeed}
         user={user}
+        updateFeed={updateFeed}
+        feeds={feeds}
+        setCurrentFeed={setCurrentFeed}
       />
       {feeds.map((feed, index) => {
         if (feeds.length === index + 1) {
