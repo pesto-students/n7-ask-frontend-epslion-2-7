@@ -32,7 +32,7 @@ const App = () => {
    
     if(sessionStorage.getItem('userLoggedIn')){
     
-      setUser(sessionStorage.getItem('user'))
+      setUser(JSON.parse(sessionStorage.user))
     }
 
   },[])
