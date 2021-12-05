@@ -25,9 +25,10 @@ function AppHeader({ setWhatToShow, setShowDetailFeed }) {
   };
   const logOut = (setUser) => {
     sessionStorage.setItem('userLoggedIn', false)
-    sessionStorage.setItem('user', '')
+    sessionStorage.removeItem("user");
     setVisible(false);
     setUser(null);
+    history.push('/')
   };
 
   const onSearchClick =()=>{
@@ -93,7 +94,7 @@ function AppHeader({ setWhatToShow, setShowDetailFeed }) {
                           xxl: 50,
                         }}
                         src={
-                          user.profilePic ?  user.profilePic  : "./Avatar 3.png"
+                          user.profilePic ?  user.profilePic  : "/Avatar 3.png"
                         }
                         onClick={showDrawer}
                       />

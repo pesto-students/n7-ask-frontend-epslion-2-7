@@ -30,10 +30,6 @@ function Dashboard({
     <userContext.Consumer>
       {({ toSort,setSelectedInterests, selectedInterests }) => (
         <>
-          <AppHeader
-            setWhatToShow={setWhatToShow}
-            setShowDetailFeed={setShowDetailFeed}
-          />
           {!showDetailFeed && (
             
             <Layout>

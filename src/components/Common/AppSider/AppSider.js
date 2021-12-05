@@ -8,53 +8,41 @@ import {
   BuildOutlined,
 } from "@ant-design/icons";
 import axios from "axios";
-const InterestsFields1 = [
+
+const Interests = {
   
-  "Nature",
-  "Technology",
-  "Movies",
-  "Space",
-  "Business",
-  "Travel",
-  "Health",
-  "Books",
-  "Science",
-  "Fashion",
-];
-const InterestsFields = [
-  
-  "Nature",
-  "Technology",
-  "Movies",
-  "Space",
-  "Business",
-  "Travel",
-  "Health",
-  "Books",
-  "Science",
-  "Fashion",
-];
+  Nature:1,
+  Technology:2,
+  Movies:3,
+  Space:4,
+  Business:5,
+  Travel:6,
+  Health:9,
+  Books:10,
+  Science:11,
+  Fashion:12
+};
 function AppSider({ selectedInterests, whatToShow,setWhatToShow, toSort, setSelectedInterests }) {
-  const [interestCategory, setInterestCategory] = useState([]);
+  // const [interestCategory, setInterestCategory] = useState(Object.keys(Interests));
 
   useEffect(async () => {
     
-    setInterestCategory(InterestsFields);
+    // setInterestCategory(InterestsFields);
   }, []);
 
-  useEffect(async()=>{
+  // useEffect(async()=>{
 
-    // if(whatToShow!="interestsList"){
-    //   console.log("clear")
-    //   setSelectedInterests([])
-    // }
+  //   // if(whatToShow!="interestsList"){
+  //   //   console.log("clear")
+  //   //   setSelectedInterests([])
+  //   // }
 
-  },[whatToShow])
+  // },[whatToShow])
 
   const onInterestsChecked = (checkedValue) => {
     // setWhatToShow("home")
     setSelectedInterests(checkedValue);
-    // console.log("Selected Checkboxes"+ checkedValue)
+    console.log("Selected Checkboxes"+ checkedValue)
   };
   const onFilterClick = (e, type) => {
     if (type == "sort") {
@@ -106,7 +94,7 @@ function AppSider({ selectedInterests, whatToShow,setWhatToShow, toSort, setSele
         <Menu.Divider />
         <Menu.ItemGroup className="sideBarMenu" key="interest" title="Interest">
           <Checkbox.Group
-            options={interestCategory}
+            options={Object.keys(Interests)}
             value={selectedInterests}
             onChange={onInterestsChecked}
           />

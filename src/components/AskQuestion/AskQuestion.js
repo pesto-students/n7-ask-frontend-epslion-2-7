@@ -7,28 +7,39 @@ import axios from "axios";
 const { TextArea } = Input;
 const { Option } = Select;
 
-const Interests = [
+// nature: 1,
+//       technology: 2,
+//       movies: 3,
+//       space: 4,
+//       business: 5,
+//       travel: 6,
+//       health: 9,
+//       books: 10,
+//       science: 11,
+//       fashion: 12,
+
+ const Interests = {
   
-  "Nature",
-  "Technology",
-  "Movies",
-  "Space",
-  "Business",
-  "Travel",
-  "Health",
-  "Books",
-  "Science",
-  "Fashion",
-];
-const InterestsList = Interests.map((val, index) => (
+  Nature:1,
+  Technology:2,
+  Movies:3,
+  Space:4,
+  Business:5,
+  Travel:6,
+  Health:9,
+  Books:10,
+  Science:11,
+  Fashion:12
+};
+const InterestsList = Object.keys(Interests).map((val, index) => (
   
-  <Option key={val}>{val}</Option>
+  <Option key={Interests[val]}>{val}</Option>
 ));
 
-const Editor = ({ submitting, value ,user}) => {
+const Editor = ({ submitting, value ,user, updateQuestionAskedToggle}, questionAskedToggle) => {
   const [questionAsked, setQuestionAsked] = useState("");
   const [selectedInterestsList, setSelectedInterestList] = useState([]);
-  const [selectedInterestsListCopy, setSelectedInterestListCopy] = useState([]);
+  // const [selectedInterestsListCopy, setSelectedInterestListCopy] = useState([]);
 
   function handleTextChange(e) {
     setQuestionAsked(e.target.value);   
@@ -36,8 +47,8 @@ const Editor = ({ submitting, value ,user}) => {
 
   function handleChange(value) {
     console.log("selectedValue",value)
-    const newVal = value.map(val=>Interests.indexOf(val)+1)
-    setSelectedInterestListCopy(newVal)
+    // const newVal = value.map(val=>Interests[val])
+    // setSelectedInterestListCopy(newVal)
     setSelectedInterestList(value);
     // console.log(newVal)
     //console.log(`selected ${value}`)
@@ -45,13 +56,20 @@ const Editor = ({ submitting, value ,user}) => {
 
   const onSubmit = async () => {
     await axios.post(
-     "https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/question",
-     { question: questionAsked, interest: selectedInterestsListCopy, expertId: "" },
+     'https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/question',
+     { question: questionAsked, interest: selectedInterestsList, expertId: "" },
      { headers: { Authorization: `${user.token}` } }
    ).then(res => {
      if(res.data.success){
        setQuestionAsked("")
        setSelectedInterestList([])
+       if(questionAskedToggle==true){
+         updateQuestionAskedToggle(false)
+       }
+       else{
+         updateQuestionAskedToggle(true)
+       }
+  
      }
    })
   
@@ -97,7 +115,7 @@ const Editor = ({ submitting, value ,user}) => {
   );
 };
 
-function AskQuestion({ user }) {
+function AskQuestion({ user, updateQuestionAskedToggle,questionAskedToggle }) {
   
   return (
     <userContext.Consumer>
@@ -120,7 +138,7 @@ function AskQuestion({ user }) {
                   alt="Han Solo"
                 />
               }
-              content={<Editor user={user}/>}
+              content={<Editor user={user} updateQuestionAskedToggle={updateQuestionAskedToggle} questionAskedToggle={questionAskedToggle}/>}
             />
           </div>
         );

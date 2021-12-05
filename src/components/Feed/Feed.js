@@ -19,7 +19,7 @@ import {
 } from "@ant-design/icons";
 import AnswerModal from "../Modal/AnswerModal";
 import { Redirect, Link } from "react-router-dom";
-import { PresetColorTypes } from "antd/lib/_util/colors";
+import AskQuestion from "../AskQuestion/AskQuestion";
 
 const labelColors = [
   "magenta",
@@ -48,7 +48,19 @@ const InterestsFields1 = [
   "Science",
   "Fashion",
 ];
-
+const Interests = {
+  
+  Nature:1,
+  Technology:2,
+  Movies:3,
+  Space:4,
+  Business:5,
+  Travel:6,
+  Health:9,
+  Books:10,
+  Science:11,
+  Fashion:12
+};
 const Feed = ({
   whatToShow,
   onFeedClick,
@@ -59,14 +71,13 @@ const Feed = ({
   selectedInterests,
 }) => {
   const [currentFeed, setCurrentFeed] = useState();
-  const [isEditing, setIsEditing] = useState(false);
   const [feeds, updateFeed] = useState([]);
   const [pageNumber, setPageNumber] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [modalFeed, setModalFeed] = useState([]);
-
+  const [IconColor, setColorIcon] = useState("grey");
+  const [questionAskedToggle, updateQuestionAskedToggle]= useState(false);
   const observer = useRef();
   const lastFeedElementRef = useCallback(
     (node) => {
@@ -150,15 +161,23 @@ const Feed = ({
   };
 
   useEffect(async () => {
+    
     window.scrollTo(0, 0)
     updateFeed([]);
     setPageNumber(1);
+
+    if(user){
+      setColorIcon("black")
+    }
+    else{
+      setColorIcon("grey")
+    }
     
 
     if (whatToShow == "home") {
       let response;
       let checkedList = selectedInterests.map((value) =>
-        InterestsFields1.indexOf(value)
+        Interests[value]
       );
       console.log("userFeed");
       response = await axios.get(
@@ -191,7 +210,7 @@ const Feed = ({
     }
 
     
-  }, [whatToShow, user, selectedInterests,searchQuery]);
+  }, [whatToShow, user, selectedInterests,searchQuery, questionAskedToggle]);
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -207,7 +226,7 @@ const Feed = ({
   useEffect(async () => {
     if (whatToShow == "home") {
       let checkedList = selectedInterests.map((value) =>
-        InterestsFields1.indexOf(value)
+        Interests[value]
       );
 
       let response = await axios.get(
@@ -257,7 +276,7 @@ const Feed = ({
       <Tooltip key="comment-basic-like" title="Answer">
         <span
           onClick={() => ClickForModal(feed)}
-          style={{ fontSize: "16px", color: "black" }}
+          style={{ fontSize: "16px", color: `${IconColor}` }}
         >
           <EditFilled style={{ fontSize: "16px" }} />
           <span className="comment-action iconPositon">{feed.answers}</span>
@@ -270,7 +289,7 @@ const Feed = ({
           style={{ fontSize: "16px" }}
         >
           {createElement(feed.isUserLiked ? HeartFilled : HeartOutlined, {
-            style: { color: "black" },
+            style: { color: `${IconColor}` },
           })}
           <span className="comment-action iconPositon">{feed.likes}</span>
         </span>
@@ -278,7 +297,7 @@ const Feed = ({
 
       <Tooltip key="comment-basic-like" title="Comment">
         <Link to={"question/" + feed.id}>
-          <span style={{ fontSize: "16px", color: "black" }}>
+          <span style={{ fontSize: "16px", color: `${IconColor}` }}>
             <CommentOutlined style={{ fontSize: "16px" }} />
             <span className="comment-action iconPositon">{feed.comments}</span>
           </span>
@@ -286,7 +305,7 @@ const Feed = ({
       </Tooltip>,
 
       <Tooltip key="comment-basic-like" title="View Count">
-        <span style={{ fontSize: "16px", color: "black" }}>
+        <span style={{ fontSize: "16px", color: `${IconColor}` }}>
           <EyeOutlined style={{ fontSize: "16px" }} />
           <span className="comment-action iconPositon">{feed.views}</span>
         </span>
@@ -298,7 +317,7 @@ const Feed = ({
               window.location.host + "/question/" + feed.id
             );
           }}
-          style={{ fontSize: "16px", paddingTop: "6px", color: "black" }}
+          style={{ fontSize: "16px", paddingTop: "6px", color: `${IconColor}` }}
         />
       </Tooltip>,
     ];
@@ -311,6 +330,7 @@ const Feed = ({
 
   return (
     <>
+    {user ? <AskQuestion  user={user} updateQuestionAskedToggle={updateQuestionAskedToggle} questionAskedToggle={questionAskedToggle}/> : null}
       <AnswerModal
         setIsModalVisible={setIsModalVisible}
         isModalVisible={isModalVisible}
@@ -369,7 +389,7 @@ const Feed = ({
                 }
               />
               {feed.interests.map((interest, index) => (
-                <Tag color={labelColors[index % 11]}>{interest.name}</Tag>
+                <Tag key={index}color={labelColors[index % 11]}>{interest.name}</Tag>
               ))}
               <Divider />
             </div>
@@ -421,7 +441,7 @@ const Feed = ({
                 }
               />
               {feed.interests.map((interest, index) => (
-                <Tag color={labelColors[index % 11]}>{interest.name}</Tag>
+                <Tag  key={index} color={labelColors[index % 11]}>{interest.name}</Tag>
               ))}
               <Divider />
             </div>

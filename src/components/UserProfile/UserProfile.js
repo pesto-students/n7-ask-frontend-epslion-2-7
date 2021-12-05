@@ -28,7 +28,8 @@ function beforeUpload(file) {
 
 
 
-function UserProfile({ user }) {
+function UserProfile({user}) {
+ 
   const [userData, setUserData] = useState([]);
   const [posts, updatePost] = useState([]);
   const [type, setType]= useState("question");
@@ -37,27 +38,62 @@ function UserProfile({ user }) {
   const [answers, setAnswers]= useState([])
   const [comments, setComments]= useState([])
 
-  useEffect(async () => {
-    const questions = await axios.get("https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/userQuestions", {
-      headers: { Authorization: `${user.token}` },
-    });
-    if(questions.data.success){
-      setQuestions(questions.data.data);
-    }
+  useEffect(() => {
 
-    const answers = await axios.get("https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/userAnswers", {
-      headers: { Authorization: `${user.token}` },
-    });
-    if(answers.data.success){
-      setAnswers(answers.data.data)
-    }
+    if( sessionStorage.getItem('userLoggedIn') ) {
 
-    const comments = await axios.get("https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/userComments", {
-      headers: { Authorization: `${user.token}` },
-    });
-    if(comments.data.data){
-      setComments(comments.data.data)
-    }
+      
+      async function fetchMyAPI(){
+        await axios.all([
+          axios.get("https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/userQuestions", {
+          headers: { Authorization: JSON.parse(sessionStorage.getItem('user')).token }
+        }),
+        axios.get("https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/userAnswers", {
+          headers: { Authorization: JSON.parse(sessionStorage.getItem('user')).token },
+        }),
+        axios.get("https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/userComments", {
+          headers: { Authorization: JSON.parse(sessionStorage.getItem('user')).token },
+        })
+    
+        ]).then(axios.spread((ques,ans,comm)=>{
+          console.log(ques);console.log(ans);console.log(comm)
+          if(ques.data.success){
+            setQuestions(ques.data.data);
+          }
+          if(ans.data.success){
+            setAnswers(ans.data.data);
+          }
+          if(comm.data.success){
+            setComments(comm.data.data);
+          }
+         
+        }))
+  
+      }
+       fetchMyAPI()
+     
+     }
+    
+    // const questions = await axios.get("https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/userQuestions", {
+    //   headers: { Authorization: `${user.token}` },
+    // });
+    // if(questions.data.success){
+    //   setQuestions(questions.data.data);
+    // }
+
+    // const answers = await axios.get("https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/userAnswers", {
+    //   headers: { Authorization: `${user.token}` },
+    // });
+    // if(answers.data.success){
+    //   setAnswers(answers.data.data)
+    // }
+
+    // const comments = await axios.get("https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/userComments", {
+    //   headers: { Authorization: `${user.token}` },
+    // });
+    // if(comments.data.data){
+    //   setComments(comments.data.data)
+    // }
 
     
     
@@ -67,11 +103,29 @@ function UserProfile({ user }) {
     return () => console.log("unmounting...");
   }, []);
 
-  const onButtonClick = (type) => {
+  const onButtonClick = async(type) => {
     if (type === "questions") {
+      if(questions.length==0){
+        await axios.get("https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/userQuestions", {
+          headers: { Authorization: JSON.parse(sessionStorage.getItem('user')).token }
+        }).then((res)=>{
+          if(res.data.success){
+            setQuestions(res.data.data)
+          }
+        })
+      }
       setType("question")
       updatePost(questions);
     } else if (type === "answers") {
+      if(answers.length==0){
+       await axios.get("https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/userAnswers", {
+          headers: { Authorization: JSON.parse(sessionStorage.getItem('user')).token },
+        }).then((res)=>{
+          if(res.data.success){
+            setAnswers(res.data.data)
+          }
+        })
+      }
       setType("answer")
      updatePost(answers);
     } 
@@ -79,6 +133,15 @@ function UserProfile({ user }) {
       setType("reputation")
      updatePost(answers);
     }else {
+      if(comments.length==0){
+        await axios.get("https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/userComments", {
+          headers: { Authorization: JSON.parse(sessionStorage.getItem('user')).token },
+        }).then((res)=>{
+          if(res.data.success){
+            setComments(res.data.data)
+          }
+        })
+      }
       setType("comment")
       updatePost(comments);
     }
@@ -106,7 +169,7 @@ function UserProfile({ user }) {
       <br/>
       <div id="UserPersonalInfo">
         <Divider />
-        <h1>{user.name}</h1>
+        <h1>{user ? user.name : ""}</h1>
         <div className="editIcon">
         <Avatar
           src={userData.profilePic ? userData.profilePic : './Avatar 3.png'}

@@ -24,11 +24,11 @@ const LeftMenu = ({ setWhatToShow, setShowDetailFeed }) => {
   };
   const { md } = useBreakpoint();
   return (
-    <Menu mode={md ? "horizontal" : "inline"}>
-      <Menu.Item key="home" className="leftMenuOptions">
+    <Menu mode={md ? "horizontal" : "inline"} selectedKeys={[location.pathname]}>
+      <Menu.Item key="/" className="leftMenuOptions">
         <a onClick={() => onMenuClick("home")}>Home</a>
       </Menu.Item>
-      <Menu.Item key="questions"  className="leftMenuOptions">
+      {/* <Menu.Item key="questions"  className="leftMenuOptions">
         <a
           onClick={() => {
             onMenuClick("home");
@@ -37,7 +37,7 @@ const LeftMenu = ({ setWhatToShow, setShowDetailFeed }) => {
           Questions
         </a>
         
-      </Menu.Item>
+      </Menu.Item> */}
       {/* <Menu.Item key="answers"  className="leftMenuOptions">
         <a
           onClick={() => {

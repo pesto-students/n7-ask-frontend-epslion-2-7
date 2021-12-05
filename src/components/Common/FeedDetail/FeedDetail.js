@@ -105,15 +105,23 @@ function FeedDetail({ setShowDetailFeed, feedContent, user }) {
   const [comments, setComments]= useState([{}]);
   const [answerOrCommClicked, setanswerOrCommClicked]= useState(false)
   const [likeToggle, setLikeToggle] = useState(false)
+  const [IconColor, setColorIcon] = useState("grey")
+ 
+  useEffect(()=>{
+    if(user){
+      setColorIcon("black")
+    }
+
+  },[user])
 
   useEffect( () => {
    
    async function fetchData(){
-     if(user){
+     
       const questionReq = await axios.get(
         `https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/question/${id}`,
         {
-          headers: { Authorization: `${user.token}` },
+          headers: user ? { Authorization: `${user.token}` } : ""
         }
       );
       if (questionReq && questionReq.data.success) {
@@ -123,7 +131,7 @@ function FeedDetail({ setShowDetailFeed, feedContent, user }) {
       const answerReq = await axios.get(
         `https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/answers/${id}`,
         {
-          headers: { Authorization: `${user.token}` },
+          headers: user ? { Authorization: `${user.token}` } : ""
         }
       );
       if(answerReq.data.success){
@@ -133,41 +141,37 @@ function FeedDetail({ setShowDetailFeed, feedContent, user }) {
       const commentsReq = await axios.get(
         `https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/comments/${id}/question`,
         {
-          headers: { Authorization: `${user.token}` },
+          headers: user ? { Authorization: `${user.token}` } : ""
         }
       );
       if(commentsReq.data.success){
         setComments(commentsReq.data.data)
   
       }
-
-     }
-     else{
-      const questionReq = await axios.get(
-        `https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/question/${id}`
-      );
-      if (questionReq && questionReq.data.success) {
-        console.log(questionReq.data.data)
-        setQuestionDetails(questionReq.data.data);
-      }
-      const answerReq = await axios.get(
-        `https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/answers/${id}`
-      );
-      if(answerReq.data.success){
-        setAnswers(answerReq.data.data)
+    //  else{
+    //   const questionReq = await axios.get(
+    //     `https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/question/${id}`
+    //   );
+    //   if (questionReq && questionReq.data.success) {
+    //     console.log(questionReq.data.data)
+    //     setQuestionDetails(questionReq.data.data);
+    //   }
+    //   const answerReq = await axios.get(
+    //     `https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/answers/${id}`
+    //   );
+    //   if(answerReq.data.success){
+    //     setAnswers(answerReq.data.data)
   
-      }
-      const commentsReq = await axios.get(
-        `https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/comments/${id}/question`
-      );
-      if(commentsReq.data.success){
-        setComments(commentsReq.data.data)
+    //   }
+    //   const commentsReq = await axios.get(
+    //     `https://nu47h3l3z6.execute-api.ap-south-1.amazonaws.com/comments/${id}/question`
+    //   );
+    //   if(commentsReq.data.success){
+    //     setComments(commentsReq.data.data)
   
-      }
+    //   }
 
-     }
-    
-
+    //  }
    }
    fetchData();
     
@@ -270,7 +274,7 @@ function FeedDetail({ setShowDetailFeed, feedContent, user }) {
       <Tooltip key="comment-basic-like" title="Like">
         <span
           onClick={() => onActionClicked("like",feed,feedType)}
-          style={{ fontSize: "16px" }}
+          style={{ fontSize: "16px", color: `${IconColor}` }}
         >
           {createElement(feed.isUserLiked ? HeartFilled : HeartOutlined)}
           <span className="comment-action iconPositon">{feed.likes}</span>
@@ -285,13 +289,13 @@ function FeedDetail({ setShowDetailFeed, feedContent, user }) {
       // </Tooltip>,
 
       <Tooltip key="comment-basic-like" title="View Count">
-        <span onClick={onActionClicked} style={{ fontSize: "16px" }}>
+        <span style={{ fontSize: "16px", color: `${IconColor}` }}>
           <EyeOutlined style={{ fontSize: "16px" }} />
           <span className="comment-action iconPositon">{feed.views}</span>
         </span>
       </Tooltip>,
       <Tooltip title="Click to Copy">
-        <ShareAltOutlined style={{ fontSize: "16px" }} onClick={() => {navigator.clipboard.writeText(window.location.host + "/question/" + feed.questionId)}} />
+        <ShareAltOutlined style={{ fontSize: "16px", color: `${IconColor}` }} onClick={() => {navigator.clipboard.writeText(window.location.host + "/question/" + feed.questionId)}} />
       </Tooltip>
       ,
     ];
@@ -317,7 +321,7 @@ function FeedDetail({ setShowDetailFeed, feedContent, user }) {
       <Tooltip key="comment-basic-like" title="Like">
         <span
           onClick={() => onActionClicked("like",questionDetails[0],"question")}
-          style={{ fontSize: "16px" }}
+          style={{ fontSize: "16px", color: `${IconColor}` }}
         >
           {createElement( questionDetails[0].isUserLiked ? HeartFilled : HeartOutlined)}
           <span className="comment-action iconPositon">{questionDetails[0].likes}</span>
@@ -325,13 +329,13 @@ function FeedDetail({ setShowDetailFeed, feedContent, user }) {
       </Tooltip>,
 
       <Tooltip key="comment-basic-like" title="View Count">
-        <span style={{ fontSize: "16px" }}>
+        <span style={{ fontSize: "16px", color: `${IconColor}` }}>
           <EyeOutlined style={{ fontSize: "16px" }} />
           <span className="comment-action">{questionDetails[0].views}</span>
         </span>
       </Tooltip>,
       <Tooltip title="Click to copy">
-        <ShareAltOutlined style={{ fontSize: "16px", paddingTop: "6px" }} onClick={() => {navigator.clipboard.writeText(window.location.host + "/question/" + questionDetails[0].id)}} />
+        <ShareAltOutlined style={{ fontSize: "16px", paddingTop: "6px",color: `${IconColor}` }} onClick={() => {navigator.clipboard.writeText(window.location.host + "/question/" + questionDetails[0].id)}} />
       </Tooltip>
       ,
     ];
@@ -342,53 +346,34 @@ function FeedDetail({ setShowDetailFeed, feedContent, user }) {
 
     <div className="FeedContainer">
       <div id="FeedContent">
-        {questionDetails.map((item, index)=>(
-          <>
-          <Comment
-          key={index}
-          actions={actions()}
-          
-          author={ <h3 style={{ color: "black" }}>
-                   
-          <b>{item.userName}</b>
-        </h3>}
-          avatar={
-            <Avatar
-              size={{
-                lg: 80,
-                md: 80,
-                sm: 80,
-                xs: 50,
-                xl: 80,
-                xxl: 80,
-              }}
-              src={item.profilePic ? item.profilePic : "/profile.png"}
-              alt="Han Solo"
-            />
-          }
-          content={<p style={{ fontSize: "16px" }}>{item.question}</p>}
-        />
+        {
+        questionDetails.map((item, index)=>(
+          <div key={index}>
+            <Comment actions={actions()} author={ <h3 style={{ color: "black" }}> <b>{item.userName}</b></h3> }
+                avatar={
+                <Avatar
+                  size={{lg: 80,md: 80, sm: 80, xs: 50, xl: 80,xxl: 80}}
+                  src={item.profilePic ? item.profilePic : "/profile.png"}
+                />
+                }
+                content={<p style={{ fontSize: "16px" }}>{item.question}</p>}
+             />
 
-         {/* Answer portal hidden based on user logged in*/}
+           {/* Answer portal hidden based on user logged in*/}
          <div>
-         <Comment
-           hidden={!user ? true : false}
-           avatar={<Avatar
-             src={user}
-             size={{
-               lg: 80,
-               md: 80,
-               sm: 80,
-               xs: 50,
-               xl: 80,
-               xxl: 80,
-             }}
-             alt="Han Solo"
-           />}
-           content={<Editor user={user} questionId={item.id} selectedButton={selectedButton} setanswerOrCommClicked={setanswerOrCommClicked} answerOrCommClicked={answerOrCommClicked}/>}
-         />
+          <Comment
+            hidden={!user ? true : false}
+            avatar={
+              <Avatar
+                src={user}
+                size={{ lg: 80,md: 80,sm: 80,xs: 50,xl: 80, xxl: 80,}}
+                alt="Han Solo"
+              />
+            }
+            content={<Editor user={user} questionId={item.id} selectedButton={selectedButton} setanswerOrCommClicked={setanswerOrCommClicked} answerOrCommClicked={answerOrCommClicked}/>}
+          />
+        </div>
        </div>
-       </>
 
         ))}
       
@@ -406,7 +391,7 @@ function FeedDetail({ setShowDetailFeed, feedContent, user }) {
                 avatar={
                   <Avatar
                     size="large"
-                    src="https://os.alipayobjects.com/rmsportal/UXamdIxYSkXfoVo.jpg"
+                    src={`/Avatar ${index % 7}.png`}
                     alt="Han Solo"
                   />
                 }

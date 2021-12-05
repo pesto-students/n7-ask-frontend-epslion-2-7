@@ -30,9 +30,10 @@ const App = () => {
 
   useEffect (() =>{
    
-    if(sessionStorage.getItem('userLoggedIn')){
+    if( sessionStorage.getItem('userLoggedIn') ) {
+
+     setUser(JSON.parse(sessionStorage.getItem('user')))
     
-      setUser(JSON.parse(sessionStorage.user))
     }
 
   },[])
@@ -47,6 +48,10 @@ const App = () => {
        
           <Switch>
             <Route exact path="/">
+            <AppHeader
+            setWhatToShow={setWhatToShow}
+            setShowDetailFeed={setShowDetailFeed}
+          />
               <Dashboard user={user} whatToShow={whatToShow} setWhatToShow={setWhatToShow} showDetailFeed={showDetailFeed} setShowDetailFeed={setShowDetailFeed} />
             </Route>
             <Route path="/reset">
@@ -72,7 +77,7 @@ const App = () => {
             <Route path="/userProfile">
             <AppHeader   setWhatToShow={setWhatToShow} setShowDetailFeed={setShowDetailFeed}/>
               {/* //Check if the user is logged In  */}
-              {user!=null ? <UserProfile user={user}/> : <Redirect to='/login'/>}
+              {sessionStorage.getItem('userLoggedIn') ? <UserProfile user={user}/> : <Redirect to='/login'/>}
             {/* <UserProfile user={user} /> */}
               
             </Route>
