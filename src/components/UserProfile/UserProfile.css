@@ -1,0 +1,80 @@
+.container {
+  display: grid;
+  height: 100%;
+  padding-left: 10px;
+  padding-right: 10px;
+  z-index: 2;
+  
+ 
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  grid-template-rows: 400px auto auto;
+  
+  grid-template-areas:
+    "UserPersonalInfo UserPersonalInfo UserPersonalInfo UserPersonalInfo UserPersonalInfo"
+    " summary questions answers comments reputation "
+    "posts posts posts posts posts"
+}
+#UserPersonalInfo {
+  background: repeating-linear-gradient(#afb1b3, #afb1b3 55.0%, #ffffff 45.0%, #ffffff 100%);
+  display: flex;
+  flex-direction: column-reverse;
+  z-index: 2;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  text-align: center;
+  grid-area: UserPersonalInfo;
+}
+#summary{
+  grid-area:summary;
+}
+#reputation{
+  grid-area:reputation;
+}
+#questions {
+  grid-area: questions;
+}
+#answers {
+  grid-area: answers;
+}
+#comments {
+  grid-area: comments;
+}
+#posts {
+  height: 100%;
+  width: 100%;
+  grid-area: posts;
+}
+.editIcon{
+  display: block;
+
+}
+.userProfileButtons{
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 6px;
+    background-color: black;
+    color: white;
+    
+    
+}
+.userProfileButtons:hover{
+    background-color: white;
+    color: black;
+    border-color: white;
+}
+
+
+
+@media only screen and (max-width: 700px) {
+  .container {
+    padding-left: 20px;
+    padding-right: 20px;
+    grid-template-columns: auto;
+   
+    grid-template-areas:
+      "UserPersonalInfo"
+      "questions answers comments"
+      "posts";
+  }
+
+}

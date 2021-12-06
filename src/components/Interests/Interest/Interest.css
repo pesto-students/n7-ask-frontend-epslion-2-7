@@ -1,0 +1,13 @@
+
+.LayoutDimension{
+    display: grid;
+    place-items: center;
+    max-width: 600px;
+    max-height:400px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.ImageDimension {
+    margin-top: 1%;
+}

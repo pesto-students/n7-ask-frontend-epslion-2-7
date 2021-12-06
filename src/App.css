@@ -1,0 +1,308 @@
+@import '~antd/dist/antd.css';
+@import url('https://fonts.googleapis.com/css2?family=Roboto&family=Roboto+Slab&display=swap');
+body {
+  font-family: 'Roboto Slab', sans-serif;
+}
+.menuBar {
+  display: flex;
+  align-items: center;
+
+  height:70px;
+  padding: 0 20px;
+  border-bottom: solid 1px #e8e8e8;
+  /*overflow: auto;*/
+  /* box-shadow: 0 0 30px #b6b0b0; */
+}
+
+.logo {
+  margin-right: 100px;
+  float: left;
+  margin-top:10px;
+  
+}
+
+.logo a {
+  display: inline-block;
+  font-size: 20px;
+  padding: 19px 20px;
+  text-transform: capitalize;
+}
+
+.menuCon {
+  width: calc(100% - 150px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  
+}
+
+.menuCon .ant-menu-item {
+  padding: 0px 5px;
+}
+
+
+.menuCon .ant-menu-submenu-title {
+  padding: 10px 20px;
+}
+
+.menuCon .ant-menu-item a,
+.menuCon .ant-menu-submenu-title a {
+  padding: 10px 15px;
+}
+
+.menuCon .ant-menu-horizontal {
+  border-bottom: none;
+}
+
+.menuCon .leftMenu {
+  float: left;
+}
+
+.menuCon .rightMenu {
+  float: right;
+}
+
+.barsMenu {
+  float: right;
+  height: 32px;
+  padding: 6px;
+  margin-left:10px;
+  display: none;
+  background: none;
+}
+
+.barsBtn {
+  display: block;
+  width: 20px;
+  height: 2px;
+  border-width: medium;
+  background: lightgray;
+  position: relative;
+}
+
+.barsBtn:after,
+.barsBtn:before {
+  content: attr(x);
+  width: 20px;
+  position: absolute;
+  top: -6px;
+  left: 0;
+  height: 2px;
+  background: lightgray;
+}
+
+.barsBtn:after {
+  top: auto;
+  bottom: -6px;
+}
+
+.ant-drawer-body {
+  padding: 0;
+}
+
+.barsMenu>span {
+  display: block;
+}
+
+.ant-drawer-body .ant-menu-horizontal>.ant-menu-item,
+.ant-drawer-body .ant-menu-horizontal>.ant-menu-submenu {
+  display: inline-block;
+  width: 100%;
+}
+
+.ant-drawer-body .ant-menu-horizontal {
+  border-bottom: none;
+}
+
+.ant-drawer-body .ant-menu-horizontal>.ant-menu-item:hover {
+  border-bottom-color: transparent;
+}
+
+
+
+.ant-btn-primary {
+  color: #fff;
+  border-color: lightgray;
+  border-width: medium;
+  text-shadow: 0 -1px 0 rgb(0 0 0 / 12%);
+  box-shadow: 0 2px 0 rgb(0 0 0 / 5%);
+}
+.ant-btn:hover, .ant-btn:focus {
+  color: white;
+  border-color: black;
+  background-color: black;
+}
+
+.ant-layout {
+  
+   background:white; 
+}
+
+::selection {
+  color: #fff;
+  background: lightgray;
+}
+.ant-input-affix-wrapper-focused{
+
+  border-color: lightslategray;
+  box-shadow: 0 0 0 2px rgb(60 60 60 / 20%);
+}
+
+.ant-checkbox-input:focus{
+  outline: 2px solid #c00 !important
+}
+
+.ant-menu-vertical .ant-menu-item::after, .ant-menu-vertical-left .ant-menu-item::after, .ant-menu-vertical-right .ant-menu-item::after, .ant-menu-inline .ant-menu-item::after {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  border-right: 10px solid #101010 !important;
+  transform: scaleY(0.0001);
+  opacity: 0;
+  transition: transform 0.15s cubic-bezier(0.215, 0.61, 0.355, 1), opacity 0.15s cubic-bezier(0.215, 0.61, 0.355, 1);
+  content: '';
+}
+.ant-menu-item-selected {
+   color: black; 
+}
+
+.ant-menu-light .ant-menu-item:hover, .ant-menu-light .ant-menu-item-active, .ant-menu-light .ant-menu:not(.ant-menu-inline) .ant-menu-submenu-open, .ant-menu-light .ant-menu-submenu-active, .ant-menu-light .ant-menu-submenu-title:hover {
+  color: black;
+}
+.ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected {
+  background-color: lightgray;
+}
+
+
+.ant-layout-sider-zero-width-trigger {
+  position: absolute;
+  top: 0px;
+  right: -36px;
+  z-index: 1;
+  width: 36px;
+  height: 42px;
+  color: lightgray;
+  /*font-size: 18px;
+  line-height: 42px;
+  text-align: center;*/
+  background: white;
+  border-radius: 0 2px 2px 0;
+  cursor: pointer;
+  border-width: medium;
+  border-color: lightgray;
+ 
+  
+}
+.ant-layout-sider-zero-width-trigger:hover, .ant-layout-sider-zero-width-trigger:focus{
+
+  background-color: black;
+}
+
+
+
+
+
+.ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-item:hover::after, .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-submenu:hover::after, .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-item-active::after, .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-submenu-active::after, .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-item-open::after, .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-submenu-open::after, .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-item-selected::after, .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-submenu-selected::after {
+  border-bottom: 2px solid gray;
+}
+
+
+.ant-menu-horizontal > .ant-menu-item a:hover {
+  color: gray;
+}
+
+.ant-menu-horizontal > .ant-menu-item-selected a {
+  color: gray;
+}
+
+
+.ant-layout.ant-layout-has-sider > .ant-layout, .ant-layout.ant-layout-has-sider > .ant-layout-content {
+  /* display: grid; */
+  width: 0;
+  grid-template-columns: auto;
+  padding-left: 100px;
+}
+
+
+
+.ant-menu-inline, .ant-menu-vertical, .ant-menu-vertical-left {
+  /* border-right: 1px solid #f0f0f0; */
+  border-right:none
+}
+.ant-layout-sider-children {
+  border-right: 1px solid #f0f0f0;
+}
+
+html {
+  --antd-wave-shadow-color: lightgray;
+  --scroll-bar: 0;
+}
+
+.ant-layout-sider {
+  position: relative;
+  min-width: 0;
+  background:white;
+  transition: all 0.2s;
+}
+.ant-menu-item:active, .ant-menu-submenu-title:active {
+  background: #ababac;
+}
+a {
+  color:black;
+}
+
+@media (max-width: 767px) {
+  .QuestionInterestDomain{
+    width:60% !important
+  }
+
+  .menuCon {
+    width: 100%;
+  }
+  .barsMenu {
+    display: inline-block;
+  }
+
+  .leftMenu,
+  .rightMenu {
+    display: none;
+  }
+  .logo{
+    margin-right: 20px;
+  }
+  .logo a {
+    margin-left: -20px;
+  }
+
+  .menuCon .ant-menu-item,
+  .menuCon .ant-menu-submenu-title {
+    padding: 1px 20px;
+  }
+  
+  .logo a {
+    padding: 10px 20px;
+  }
+  .ant-layout.ant-layout-has-sider > .ant-layout, .ant-layout.ant-layout-has-sider > .ant-layout-content{
+    padding-left: 10px;
+    
+  }
+  .askQuestion{
+    /* width: 400px; */
+    padding-left: 40px;
+  }
+  .ant-comment-actions{
+    width: 0px;
+  }
+  .rightMenuBtn{
+    margin-left: 22px;
+  }
+}
+.ant-input-affix-wrapper:not(.ant-input-affix-wrapper-disabled):hover {
+  border-color: #8d8b8b;
+  border-right-width: 1px !important;
+  z-index: 1;
+}
+
+
+
