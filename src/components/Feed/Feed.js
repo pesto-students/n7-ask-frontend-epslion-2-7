@@ -80,18 +80,18 @@ const Feed = ({
   const [questionAskedToggle, updateQuestionAskedToggle]= useState(false);
   const observer = useRef();
   const lastFeedElementRef = useCallback(
-    (node) => {
-      if (observer.current) observer.current.disconnect();
-      observer.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting) {
-          if(hasMore){
-            setPageNumber((prevPageNumber) => prevPageNumber + 1);
-          }
-        }
-      });
-      if (node) observer.current.observe(node);
-    },
-    [hasMore]
+    // (node) => {
+    //   if (observer.current) observer.current.disconnect();
+    //   observer.current = new IntersectionObserver((entries) => {
+    //     if (entries[0].isIntersecting) {
+    //       if(hasMore){
+    //         setPageNumber((prevPageNumber) => prevPageNumber + 1);
+    //       }
+    //     }
+    //   });
+    //   if (node) observer.current.observe(node);
+    // },
+    // [hasMore]
   );
 
   const ClickForModal = (feed) => {
