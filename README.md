@@ -8,7 +8,7 @@ Welcome! we hope you enjoy the site as much as we enjoyed making it.
 
 <br/>
 
-# Table of Content
+# Table of Contents
 
 1. [Demo](#demo)
 2. [Installation](#installation)
@@ -53,7 +53,7 @@ We tried to use a completely modern tech stack while testing out some new techno
 
 - [Ant Design](https://mui.com)
 - [Axios](https://axios-http.com/docs/intro)
-- [ReactJS](https://reactjs.org/)
+- [React JS](https://reactjs.org/)
 
 <br/>
 
